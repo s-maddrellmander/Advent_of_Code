@@ -1,7 +1,7 @@
 import pytest
 from utils import load_file
 
-from year_2017 import (day_7)
+from year_2017 import (day_7, day_8)
 
 @pytest.mark.parametrize("input,expected", [("tests/test_data/data_2017_7_1.txt", "tknk")])
 def test_day_7_1(input, expected):
@@ -40,3 +40,36 @@ def test_text_to_graph():
     assert result["ebii"]["rec"] == ["ugml"]
 
 
+def test_day_8_1():
+    inputs = load_file("tests/test_data/data_2017_8.txt")
+    register = day_8.get_register(inputs)
+    result = day_8.part_1(inputs, register)
+    assert result == 1
+
+def test_day_8_2():
+    inputs = load_file("tests/test_data/data_2017_8.txt")
+    register = day_8.get_register(inputs)
+    result = day_8.part_2(inputs, register)
+    assert result == 10
+
+def test_get_register():
+    inputs = load_file("tests/test_data/data_2017_8.txt")
+    register = day_8.get_register(inputs)
+    assert sorted(list(register.keys())) == ['a', 'b', 'c']
+    assert register['a'] == 0
+
+@pytest.mark.parametrize("input,expected", [("bac inc 5 if a > 1", {"reg": "bac", "inst": 5, "cond": "a > 1"}),
+                                            ("c dec -10 if a >= 1", {"reg": "c", "inst": 10, "cond": "a >= 1"}),
+                                            ("c inc -20 if c == 10", {"reg": "c", "inst": -20, "cond": "c == 10"})])
+def test_parse_line(input, expected):
+    parsed = day_8.parse_line(input)
+    assert parsed == expected
+
+
+@pytest.mark.parametrize("input,expected", [('a == 0', True),
+                                            ('b < 10', True),
+                                            ('c != 10', False)])
+def test_eval_cond(input, expected):
+    reg = dict(a=0, b=5, c=10)
+    result = day_8.eval_cond(reg, input)
+    assert result == expected
