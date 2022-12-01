@@ -1,7 +1,7 @@
 import pytest
 from utils import load_file
 
-from year_2017 import (day_7, day_8)
+from year_2017 import (day_7, day_8, day_9)
 
 @pytest.mark.parametrize("input,expected", [("tests/test_data/data_2017_7_1.txt", "tknk")])
 def test_day_7_1(input, expected):
@@ -73,3 +73,44 @@ def test_eval_cond(input, expected):
     reg = dict(a=0, b=5, c=10)
     result = day_8.eval_cond(reg, input)
     assert result == expected
+
+
+@pytest.mark.parametrize("inputs,expected", [("{}", 1),
+                                             ("{{{}}}", 3),
+                                             ("{{},{}}", 3),
+                                             ("{{{},{},{{}}}}", 6),
+                                             ("{<{},{},{{}}>}", 1),
+                                             ("{<a>,<a>,<a>,<a>}", 1),
+                                             ("{{<a>},{<a>},{<a>},{<a>}}", 5),
+                                             ("{{<!>},{<!>},{<!>},{<a>}}", 2),
+                                             ])
+def test_get_groups(inputs, expected):
+    score, groups, _ = day_9.get_groups(inputs)
+    assert groups == expected
+
+
+@pytest.mark.parametrize("inputs,expected", [("{}", 1),
+                                             ("{{{}}}", 6),
+                                             ("{{},{}}", 5),
+                                             ("{{{},{},{{}}}}", 16),
+                                             ("{<a>,<a>,<a>,<a>}", 1),
+                                             ("{{<ab>},{<ab>},{<ab>},{<ab>}}", 9),
+                                             ("{{<!!>},{<!!>},{<!!>},{<!!>}}", 9),
+                                             ("{{<a!>},{<a!>},{<a!>},{<ab>}}", 3),
+                                             ])
+def test_get_score(inputs, expected):
+    score, groups, _ = day_9.get_groups(inputs)
+    assert score == expected
+
+
+@pytest.mark.parametrize("inputs,expected", [("<>", 0),
+                                             ("<random characters>", 17),
+                                             ("<<<<>", 3),
+                                             ("<{!>}>", 2),
+                                             ("<!!>", 0),
+                                             ("<!!!>>", 0),
+                                             ("<{oi\"!a,<{i<a>", 10),
+                                             ])
+def test_get_garb(inputs, expected):
+    _, _, garb_counter = day_9.get_groups(inputs)
+    assert garb_counter == expected
