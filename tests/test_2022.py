@@ -2,7 +2,7 @@ import pytest
 from utils import load_file
 import jax.numpy as jnp
 
-from year_2022 import (day_1, day_2)
+from year_2022 import (day_1, day_2, day_3)
 
 
 def test_grouping():
@@ -75,5 +75,48 @@ def test_game_score():
 def test_rock_paper_sissors_choice_from_outcome(inputs, expected):
     result = day_2.choice_from_outcome(inputs[0], inputs[1])
     assert result == expected
+
+
+@pytest.mark.parametrize("inputs,expected", [("asdjhasd", 4), ("aaaa", 2), ])
+def test_split_lists_in_half(inputs, expected):
+    assert len(day_3.split_lists_in_half(inputs)[0]) == expected
     
-    
+@pytest.mark.parametrize("inputs,expected", [("vJrwpWtwJgWrhcsFMMfFFhFp", "p"),
+                                             ("jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL", "L"),
+                                             ("wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn", "v"),
+                                             ("PmmdzqPrVvPwwTWBwg", "P"),
+                                             ("ttgJtRGJQctTZtZT", "t"),
+                                             ("CrZsJsPPZsGzwwsLwLmpwMDw", "s"),
+                                             ])
+def test_find_double_char(inputs, expected):
+    comp_1, comp_2 = day_3.split_lists_in_half(inputs)
+    assert day_3.find_double_char(comp_1, comp_2) == expected
+
+def test_score_char():
+    assert day_3.score_char("a") == 1
+    assert day_3.score_char("b") == 2
+    assert day_3.score_char("z") == 26
+    assert day_3.score_char("Z") == 52
+
+@pytest.mark.parametrize("inputs,expected", [(["vJrwpWtwJgWrhcsFMMfFFhFp",
+                                             "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
+                                             "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn",
+                                             "PmmdzqPrVvPwwTWBwg",
+                                             "ttgJtRGJQctTZtZT",
+                                             "CrZsJsPPZsGzwwsLwLmpwMDw",
+                                             ], 157)])
+def test_day3_1(inputs, expected):
+    result = day_3.part_1(inputs)
+    assert result == expected
+
+
+@pytest.mark.parametrize("inputs,expected", [(["vJrwpWtwJgWrhcsFMMfFFhFp",
+                                               "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
+                                                "PmmdzqPrVvPwwTWBwg",
+                                             "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn",
+                                             "ttgJtRGJQctTZtZT",
+                                             "CrZsJsPPZsGzwwsLwLmpwMDw"
+                                             ], 70)])
+def test_day3_1(inputs, expected):
+    result = day_3.part_2(inputs)
+    assert result == expected
