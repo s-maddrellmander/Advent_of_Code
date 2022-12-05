@@ -2,7 +2,7 @@ import pytest
 from utils import load_file
 import jax.numpy as jnp
 
-from year_2022 import (day_1, day_2, day_3)
+from year_2022 import (day_1, day_2, day_3, day_4, day_5)
 
 
 def test_grouping():
@@ -120,3 +120,68 @@ def test_day3_1(inputs, expected):
 def test_day3_1(inputs, expected):
     result = day_3.part_2(inputs)
     assert result == expected
+    
+
+def test_get_ranges():
+    inputs = "2-4,6-8"
+    r1, r2 = day_4.get_ranges(inputs)
+    assert jnp.allclose(r1, jnp.arange(2, 5, 1))
+    assert jnp.allclose(r2, jnp.arange(6, 9, 1))
+    assert jnp.max(r1) == 4
+
+
+@pytest.mark.parametrize("inputs,expected", [((0, 3, 4, 6), 0),
+                                             ((0, 9, 4, 6), 1),
+                                             ((4, 6, 3, 6), 1),
+                                             ((4, 6, 6, 9), 0),
+                         ])
+def test_check_intersection(inputs, expected):
+    r1 = jnp.arange(inputs[0], inputs[1])    
+    r2 = jnp.arange(inputs[2], inputs[3])    
+    assert day_4.check_intersection(r1, r2) == expected
+
+def test_day_4_1():
+    inputs = ["2-4,6-8",
+                "2-3,4-5",
+                "5-7,7-9",
+                "2-8,3-7",
+                "6-6,4-6",
+                "2-6,4-8"]
+    assert day_4.part_1(inputs) == 2
+
+def test_day_4_2():
+    inputs = ["2-4,6-8",
+                "2-3,4-5",
+                "5-7,7-9",
+                "2-8,3-7",
+                "6-6,4-6",
+                "2-6,4-8"]
+    assert day_4.part_2(inputs) == 4
+    
+def test_build_stacks():
+    stacks = {1: "ZN", 2: "MCD", 3: "P"}
+    stacks = day_5.get_all_stacks(stacks)
+    assert len(stacks[1]) == 2
+    assert len(stacks[2]) == 3
+    assert len(stacks[3]) == 1
+    
+    x = stacks[1].pop()
+    assert x == "N"
+    stacks[3].append(x)
+    assert len(stacks[3]) == 2
+    assert stacks[3].pop() == "N"
+    assert stacks[3].pop() == "P"
+
+def test_day_5_1():
+    stacks = {1: "ZN", 2: "MCD", 3: "P"}
+    stacks = day_5.get_all_stacks(stacks)
+    inputs = load_file('tests/test_data/data_2022_5.txt')
+    results = day_5.part_1(stacks, inputs)
+    assert results == "CMZ"
+
+def test_day_5_2():
+    stacks = {1: "ZN", 2: "MCD", 3: "P"}
+    stacks = day_5.get_all_stacks(stacks)
+    inputs = load_file('tests/test_data/data_2022_5.txt')
+    results = day_5.part_2(stacks, inputs)
+    assert results == "MCD"

@@ -4,7 +4,7 @@ logging.basicConfig(level="INFO")
 
 from jsonargparse import ArgumentParser
 from year_2017 import (day_7, day_8, day_9)
-from year_2022 import(day_1, day_2, day_3)
+from year_2022 import(day_1, day_2, day_3, day_4, day_5)
 
 from utils import select_day, Timer
 
@@ -29,6 +29,12 @@ def main(args):
         if select_day(args, 3):
             with Timer("Day 3"):
                 day_3.control()
+        if select_day(args, 4):
+            with Timer("Day 4"):
+                day_4.control()
+        if select_day(args, 5):
+            with Timer("Day 5"):
+                day_5.control()
 
 if __name__ == "__main__":
     parser = ArgumentParser()
