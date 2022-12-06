@@ -1,5 +1,6 @@
 import time
 import logging
+from collections import deque
 
 
 def select_day(args, day):
@@ -29,3 +30,41 @@ class Timer:
         elapsed_time = time.strftime("%H:%M:%S", time.gmtime(elapsed_time))
         # Timedelta makes for human readable format - not safe for maths operations
         logging.info(f"\U0001F551 Elapsed time for {self.name}: {elapsed_time} (HH:MM:SS)")
+
+
+class Queue():
+    def __init__(self) -> None:
+        self.queue = deque()
+    
+    def build_queue(self, inputs: str) -> deque:
+        tmp = [self.enqueue(char) for char in inputs]
+
+    def dequeue(self):
+        return self.queue.popleft()
+    
+    def enqueue(self, x):
+        self.queue.append(x)
+    
+    def __len__(self):
+        return len(self.queue)
+
+class Cache(Queue):
+    """Cache with max length 
+    This class will return the elements automatically if the length exceeds max
+    """
+    def __init__(self, max_length) -> None:
+        super().__init__()
+        self.max_length = max_length
+
+    def enforce_max_length(self):
+        if len(self.queue) > self.max_length:
+            return self.dequeue()
+        else:
+            return None
+    
+    def enqueue(self, x):
+        super().enqueue(x)
+        return self.enforce_max_length()
+    
+    def dequeue(self):
+        return super().dequeue()

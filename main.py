@@ -3,38 +3,17 @@ import logging
 logging.basicConfig(level="INFO")
 
 from jsonargparse import ArgumentParser
-from year_2017 import (day_7, day_8, day_9)
-from year_2022 import(day_1, day_2, day_3, day_4, day_5)
+import year_2022.day_selector
+import year_2017.day_selector
 
 from utils import select_day, Timer
 
 def main(args):
     # TODO: Need to split these into seperate files
     if args.year == 2017:
-        if select_day(args, 7):
-            day_7.control()
-        if select_day(args, 8):
-            with Timer("Day 8"):
-                day_8.control()
-        if select_day(args, 9):
-            with Timer("Day 9"):
-                day_9.control()
+        year_2017.day_selector.day_selector(args)
     elif args.year == 2022:
-        if select_day(args, 1):
-            with Timer("Day 1"):
-                day_1.control()
-        if select_day(args, 2):
-            with Timer("Day 2"):
-                day_2.control()
-        if select_day(args, 3):
-            with Timer("Day 3"):
-                day_3.control()
-        if select_day(args, 4):
-            with Timer("Day 4"):
-                day_4.control()
-        if select_day(args, 5):
-            with Timer("Day 5"):
-                day_5.control()
+        year_2022.day_selector.day_selector(args)
 
 if __name__ == "__main__":
     parser = ArgumentParser()

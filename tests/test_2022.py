@@ -1,8 +1,8 @@
 import pytest
-from utils import load_file
+from utils import load_file, Queue, Cache
 import jax.numpy as jnp
 
-from year_2022 import (day_1, day_2, day_3, day_4, day_5)
+from year_2022 import (day_1, day_2, day_3, day_4, day_5, day_6)
 
 
 def test_grouping():
@@ -185,3 +185,45 @@ def test_day_5_2():
     inputs = load_file('tests/test_data/data_2022_5.txt')
     results = day_5.part_2(stacks, inputs)
     assert results == "MCD"
+
+def test_build_queue():
+    st = "bvwbjplbgvbhsrlpgdmjqwftvncz"
+    queue = Queue()
+    queue.build_queue(st)
+    assert len(queue) == len(st)
+    assert queue.dequeue() == "b"
+    assert queue.dequeue() == "v"
+
+def test_cache_queue():
+    # This is an overlaoded Queue class where we enforce the max queue length
+    tmp_str = "abcdef"
+    cache = Cache(max_length=4) 
+    X = [cache.enqueue(char) for char in tmp_str]
+    assert X == [None, None, None, None, "a", "b"]
+
+
+@pytest.mark.parametrize("inputs,expected", [("bvwbjplbgvbhsrlpgdmjqwftvncz", 5),
+                                             ("nppdvjthqldpwncqszvftbrmjlhg", 6),
+                                             ("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 10),
+                                             ("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 11),
+                                             ])
+def test_day_6_1(inputs, expected):
+    queue = Queue()
+    queue.build_queue(inputs)
+    result = day_6.part_1(queue)
+    assert result == expected
+    
+@pytest.mark.parametrize("inputs,expected", [("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 19),
+                                             ("bvwbjplbgvbhsrlpgdmjqwftvncz", 23),
+                                             ("nppdvjthqldpwncqszvftbrmjlhg", 23),
+                                             ("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 29),
+                                             ("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 26),
+                                             ])
+def test_day_6_2(inputs, expected):
+    queue = Queue()
+    queue.build_queue(inputs)
+    result = day_6.part_2(queue)
+    assert result == expected
+    
+    
+    
