@@ -1,8 +1,9 @@
 import pytest
-from utils import load_file, Queue, Cache
+from utils import load_file, Queue, Cache, TreeNode
 import jax.numpy as jnp
+from collections import deque
 
-from year_2022 import (day_1, day_2, day_3, day_4, day_5, day_6)
+from year_2022 import (day_1, day_2, day_3, day_4, day_5, day_6, day_7)
 
 
 def test_grouping():
@@ -226,4 +227,53 @@ def test_day_6_2(inputs, expected):
     assert result == expected
     
     
+def test_tree_structure(): 
+    inst = ["$ cd /", "dir a", "123 file", "dir b", "$ cd b", "123 file"]
+    queue = Queue()
+    queue.build_queue(inst)
+    tree = day_7.build_tree(queue)
+    assert tree.name == "/"
+    assert tree.sub_tree[0].name == "b"
+    assert tree.sub_tree[0].leaves[0].name == "file"
+    assert tree.sub_tree[0].leaves[0].size == 123
+
+def test_sum_tree():
+    inst = ["$ cd /", "dir a", "123 file", "123 file", "dir b", "$ cd b", "123 file", "$ cd ..", "$ cd a", "123 file"]
+    queue = Queue()
+    queue.build_queue(inst)
+    tree = day_7.build_tree(queue)
+    assert tree.tree_size() == 123 + 123 + 123 + 123
+    sub = tree.sub_tree[0]
+    assert sub.tree_size() == 123
+
+def test_day_7_1():
+    inputs = load_file("tests/test_data/data_2022_7.txt")
+    result = day_7.part_1(inputs)
+    assert result == 95437
+
+def test_day_7_2():
+    inputs = load_file("tests/test_data/data_2022_7.txt")
+    result = day_7.part_2(inputs)
+    assert result == 24933642
+
+def test_day_7_2_lineby():
+    inputs = load_file("tests/test_data/data_2022_7.txt")
+    queue = Queue()
     
+    queue.build_queue(inputs)    
+    tree = day_7.build_tree(queue)
+    current_total_space = tree.tree_size()
+    TOTALSPACE = 70000000
+    SPACEREQUIRED = 30000000
+    USEDSPACE = current_total_space
+    assert current_total_space == sum([int(line.split(" ")[0]) for line in inputs if line.split(" ")[0].isnumeric()])
+    assert USEDSPACE == 48381165
+    assert TOTALSPACE - USEDSPACE == 21618835
+    SPACENEEDEDTOBECLREAED = SPACEREQUIRED - (TOTALSPACE - USEDSPACE)
+    assert SPACENEEDEDTOBECLREAED == 8381165
+    all_dir_sizes = []
+    all_dir_sizes = day_7.check_to_del(tree, all_dir_sizes, target_size=SPACENEEDEDTOBECLREAED)
+    all_dir_sizes = [x.tree_size() for x in all_dir_sizes]
+    valid_dirs = [x for x in all_dir_sizes if x > SPACENEEDEDTOBECLREAED]
+    minner = min(valid_dirs)
+    assert minner == 24933642

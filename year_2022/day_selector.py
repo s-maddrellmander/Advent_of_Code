@@ -1,7 +1,7 @@
 import logging
 from utils import select_day, Timer
 
-from . import (day_1, day_2, day_3, day_4, day_5, day_6)
+from . import (day_1, day_2, day_3, day_4, day_5, day_6, day_7)
 
 def day_selector(args):
     if select_day(args, 1):
@@ -22,3 +22,9 @@ def day_selector(args):
     if select_day(args, 6):
         with Timer("Day 6"):
             day_6.control()
+    if select_day(args, 7):
+        with Timer("Day 7"):
+            day_7.control()
+    # if select_day(args, 8):
+    #     with Timer("Day 8"):
+    #         day_8.control()

@@ -68,3 +68,24 @@ class Cache(Queue):
     
     def dequeue(self):
         return super().dequeue()
+
+
+class AttributeDict(dict):
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+
+class TreeNode:
+    def __init__(self, name, parent, size=0) -> None:
+        self.name = name
+        self.parent = parent
+        self.sub_tree = []
+        self.leaves = []
+        self.size = size
+    
+    def add_sub_tree(self, sub_tree):
+        self.sub_tree.append(sub_tree)
+    
+    def add_leaf(self, leaf):
+        self.leaves.append(leaf)
