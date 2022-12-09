@@ -3,7 +3,7 @@ from utils import load_file, Queue, Cache, TreeNode
 import jax.numpy as jnp
 from collections import deque
 
-from year_2022 import (day_1, day_2, day_3, day_4, day_5, day_6, day_7)
+from year_2022 import (day_1, day_2, day_3, day_4, day_5, day_6, day_7, day_8)
 
 
 def test_grouping():
@@ -277,3 +277,38 @@ def test_day_7_2_lineby():
     valid_dirs = [x for x in all_dir_sizes if x > SPACENEEDEDTOBECLREAED]
     minner = min(valid_dirs)
     assert minner == 24933642
+
+
+def test_parse_array_to_jax():
+    inputs = ["12345", "66766", "00304"]
+    jnp_arr = day_8.parse_array_to_jax(inputs)
+    assert jnp_arr.shape == (3, 5)
+
+
+def test_pad_jax_array():
+    arr = jnp.ones((3, 5))
+    pad_arr = day_8.pad_jnp_array(arr)
+    assert pad_arr.shape == (5, 7)
+    assert jnp.sum(pad_arr[:, 0]) == 0
+    assert jnp.sum(pad_arr[0, :]) == 0
+
+def test_get_views():
+    arr = jnp.array([[3,0,3,7,3],
+		[2,5,5,1,2],
+		[6,5,3,3,2],
+		[3,3,5,4,9],
+		[3,5,3,9,0]])
+    arr = day_8.pad_jnp_array(arr)
+    probe = (1, 1)
+    views = day_8.get_views(probe, arr)
+    assert views["up"] == jnp.array([0])
+    assert jnp.allclose(views["right"], jnp.array([0, 3, 7, 3, 0]))
+    assert views["node_value"] == 3
+    probe = (3, 3)
+    views = day_8.get_views(probe, arr)
+    assert jnp.allclose(views["up"], jnp.array([0, 3, 5]))
+    assert jnp.allclose(views["right"], jnp.array([3, 2, 0]))
+    assert views["node_value"] == 3
+
+    count = day_8.loop_all_nodes(arr)
+    assert count == 21
