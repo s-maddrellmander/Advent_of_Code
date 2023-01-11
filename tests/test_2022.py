@@ -5,9 +5,11 @@ import numpy as np
 from collections import deque
 from tqdm import tqdm
 import cmath
+from collections import Counter
 
 from year_2022 import (day_1, day_2, day_3, day_4, day_5, day_6, day_7, day_8, 
-                       day_9, day_10, day_11, day_12)
+                       day_9, day_10, day_11, day_12, day_13, day_14, day_15,
+                       day_16, day_17, day_18, day_20, day_22)
 
 
 def test_grouping():
@@ -612,4 +614,292 @@ def test_day_12_2():
             "acctuvwj",
             "abdefghi"]
     result = day_12.part_2(grid)
-    assert result == 29 
+    assert result == 29
+
+@pytest.mark.parametrize("inputs,expected", [("[1,1,3,1,1]", [1, 1, 3, 1, 1]),
+                                             ("[[1],[2,3,4]]", [[1], [2, 3, 4]]),
+                                             ("[[8,7,6]]", [[8,7,6]]),
+                                             ("[[[]]]", [[[]]]),
+                                             ("[1,[2,[3,[4,[5,6,7]]]],8,9]", [1,[2,[3,[4,[5,6,7]]]],8,9])
+                                             ])
+def test_day_13_parse_line(inputs, expected):
+    result = day_13.parse_line(inputs)
+    assert result == expected
+
+
+@pytest.mark.parametrize("left, right, expected", [([1, 2, 3], [1, 2, 4], True),
+                                                   ([1, 2, 4, 4, 5], [1, 2, 2, 0], False),
+                                                   ([4, 4, 4], [5, 4], True),
+                                                   ([1,1,3,1,1], [1,1,5,1,1], True),
+                                                   ([7,7,7,7], [7,7,7], False),
+                                                   ([], [3], True)
+                                             ])
+def test_compare_list_simple(left, right, expected):
+    result = day_13.compare_list(left, right)
+    assert result == expected
+    
+@pytest.mark.parametrize("left, right, expected", [([[1],[2,3,4]], [[1],4], True),
+                                                   ([9], [[8,7,6]], False),
+                                                   ([[4,4],4,4], [[4,4],4,4,4], True),
+                                                   ([[[]]], [[]], False),
+                                                   ([1,[2,[3,[4,[5,6,7]]]],8,9], [1,[2,[3,[4,[5,6,0]]]],8,9], False),
+                                                   ([1,[2,[3,[4,[4,6,7]]]],8,9], [1,[2,[3,[4,[5,6,0]]]],8,9], True),
+                                                   ([1,[2,[3,[4,[5,6,7]]]],8,9], [1,[2,[3,[4,[4,6,0]]]],8,9], False),
+                                             ])
+def test_compare_list_nested(left, right, expected):
+    result = day_13.compare_list(left, right)
+    assert result == expected
+
+
+def test_corall_type():
+    left = [1, 2, 3]
+    right = 0
+    assert [type(x) for x in day_13.corall_type(left, right)] == [list, list]
+    right = [1, 2, 3]
+    left = 0
+    assert [type(x) for x in day_13.corall_type(left, right)] == [list, list]
+    left = 0
+    right = 1
+    assert [type(x) for x in day_13.corall_type(left, right)] == [int, int]
+
+def test_day_13_part_1():
+    inputs = load_file("tests/test_data/data_2022_13.txt")
+    result, index_list = day_13.part_1(inputs)
+    assert index_list == [1, 2, 4, 6]
+    assert result == 13
+
+
+def test_day_13_part_1_single():
+    inputs = ["[1,[2,[3,[4,[5,6,7]]]],8,9]", "[1,[2,[3,[4,[5,6,0]]]],8,9]"] 
+    i = 0
+    left = day_13.parse_line(inputs[i])
+    right= day_13.parse_line(inputs[i + 1])
+    check = day_13.compare_list(left, right)
+    
+    assert check == False
+
+def test_day_13_part_2():
+    inputs = load_file("tests/test_data/data_2022_13.txt")
+    result, index_list = day_13.part_2(inputs)
+    
+    assert index_list == [[],[[]],[[[]]],[1,1,3,1,1],[1,1,5,1,1],[[1],[2,3,4]],[1,[2,[3,[4,[5,6,0]]]],8,9],[1,[2,[3,[4,[5,6,7]]]],8,9],[[1],4],[[2]],[3],[[4,4],4,4],[[4,4],4,4,4],[[6]],[7,7,7],[7,7,7,7],[[8,7,6]],[9]]
+    assert result == 140
+
+@pytest.mark.parametrize("test_path, length", [(["498,4 -> 498,6 -> 496,6"], 5),
+                                               (["503,4 -> 502,4 -> 502,9 -> 494,9"], 15),
+                                               (["498,4 -> 498,6 -> 496,6", "503,4 -> 502,4 -> 502,9 -> 494,9"], 20) 
+                                               ])
+def test_path_to_rock_coord(test_path, length):
+    coords = []
+    for path in test_path:
+        segment = day_14.path_to_rock_coord(path)
+        coords.extend(segment)
+    coords = list(set(coords))
+    assert len(coords) == length
+
+    assert coords == day_14.get_coords(test_path)
+
+def test_fill_wth_sand():
+    cave = day_14.Map()
+    test_path = ["498,4 -> 498,6 -> 496,6", "503,4 -> 502,4 -> 502,9 -> 494,9"]
+    coords = day_14.get_coords(test_path)
+    cave.set_rock(coords)
+    assert cave.map[complex(498, 6)] == "#"
+    assert complex(498, 6) in cave.rock
+    cave.fill_with_sand()
+    assert len(cave.sand) == 1
+    assert cave.map[complex(500, 8)] == "o"
+    cave.fill_with_sand()
+    assert len(cave.sand) == 2
+    assert cave.map[complex(499, 8)] == "o"
+    for _ in range(22):
+        test_point = cave.fill_with_sand()
+        assert test_point is False
+    assert cave.map[complex(497, 5)] == "o" 
+    darth_maul = cave.fill_with_sand()
+    assert darth_maul is True
+
+def test_day_14_1():
+    test_path = ["498,4 -> 498,6 -> 496,6", "503,4 -> 502,4 -> 502,9 -> 494,9"]
+    assert day_14.part_1(test_path) == 24
+
+def test_day_14_2():
+    test_path = ["498,4 -> 498,6 -> 496,6", "503,4 -> 502,4 -> 502,9 -> 494,9"]
+    assert day_14.part_2(test_path) == 93
+    
+def test_parse_sensor_line():
+    line = "Sensor at x=2, y=18: closest beacon is at x=-2, y=15"
+    coords = day_15.parse_senor_line(line)
+    assert coords["sensor"] == (2 +18j)
+    assert coords["beacon"] == (-2 +15j)
+
+@pytest.mark.skip()
+@pytest.mark.parametrize("beacon, expected", [((0+2j), 13), ((3+6j), 85)])
+def test_scope_manhatten_distance(beacon, expected):
+    cave = dict()
+    sensor = (0 +0j)
+    cave = day_15.scope_manhatten_distance(sensor, beacon, cave)
+    assert len(cave.keys()) == expected
+
+@pytest.mark.parametrize("level, expected", [(7, 19), (6,17), (-2, 1), (10, 13)])
+def test_probe_level(level, expected): 
+    cave = dict()
+    line = "Sensor at x=8, y=7: closest beacon is at x=2, y=10"
+    coords = day_15.parse_senor_line(line)
+    cave, sqr = day_15.scope_manhatten_distance(coords["sensor"], coords["beacon"], cave)
+    count = day_15.probe_level(cave, level)
+    assert count == expected
+    
+
+def test_day_15_1():
+    inputs = load_file("tests/test_data/data_2022_15.txt")
+    count = day_15.part_1(inputs, level=10)
+    assert count == 26
+
+@pytest.mark.skip()
+def test_day_15_2():
+    inputs = load_file("tests/test_data/data_2022_15.txt")
+    count = day_15.part_2(inputs, level=20)
+    assert count == 56000011
+    
+
+@pytest.mark.parametrize("line,expected", [("Valve AA has flow rate=0; tunnels lead to valves DD, II, BB",
+                                            ("AA", 0, ["DD", "II", "BB"])),
+                                           ("Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE",
+                                            ("DD", 20, ["CC", "AA", "EE"]))])
+def test_parse_graph_line(line, expected):
+    node, flow, children = day_16.parse_graph_line(line)
+    assert node == expected[0]
+    assert flow == expected[1]
+    assert children == expected[2]
+
+def test_build_graph():
+    inputs = ["Valve AA has flow rate=0; tunnels lead to valves DD, II, BB",
+                "Valve BB has flow rate=13; tunnels lead to valves CC, AA",
+                "Valve CC has flow rate=2; tunnels lead to valves DD, BB",
+                "Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE",
+                "Valve EE has flow rate=3; tunnels lead to valves FF, DD",
+                "Valve FF has flow rate=0; tunnels lead to valves EE, GG",
+                "Valve GG has flow rate=0; tunnels lead to valves FF, HH",
+                "Valve HH has flow rate=22; tunnel leads to valve GG",
+                "Valve II has flow rate=0; tunnels lead to valves AA, JJ",
+                "Valve JJ has flow rate=21; tunnel leads to valve II",
+            ]
+    graph = day_16.build_graph(inputs)
+    assert graph.nodes["AA"].name == "AA"
+    assert graph.nodes["AA"].flow == 0
+    assert graph.nodes["AA"].children == ["DD", "II", "BB"]
+
+
+@pytest.mark.skip()
+def test_day_16_1():
+    expected = None
+    inputs = ["Valve AA has flow rate=0; tunnels lead to valves DD, II, BB",
+                "Valve BB has flow rate=13; tunnels lead to valves CC, AA",
+                "Valve CC has flow rate=2; tunnels lead to valves DD, BB",
+                "Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE",
+                "Valve EE has flow rate=3; tunnels lead to valves FF, DD",
+                "Valve FF has flow rate=0; tunnels lead to valves EE, GG",
+                "Valve GG has flow rate=0; tunnels lead to valves FF, HH",
+                "Valve HH has flow rate=22; tunnel leads to valve GG",
+                "Valve II has flow rate=0; tunnels lead to valves AA, JJ",
+                "Valve JJ has flow rate=21; tunnel leads to valve II",
+            ]
+    inputs = ["Valve AA has flow rate=0; tunnels lead to valves DD, II, BB",
+                "Valve BB has flow rate=13; tunnels lead to valves AA",
+                "Valve DD has flow rate=20; tunnels lead to valves AA",
+                "Valve II has flow rate=0; tunnels lead to valves AA",
+                
+            ]
+    result = day_16.part_1(inputs)
+    assert result == expected
+    
+
+@pytest.mark.parametrize("inputs, probe", [((0, 0, 0), (1, 1, 1)),
+                                           ((3, 1, 5), (4, 2, 6))])
+def test_make_cube(inputs, probe):
+    cube = day_18.Cube(inputs[0], inputs[1], inputs[2])
+    assert len(cube.verticies.keys()) == 8
+    assert cube.verticies[7] == probe
+    assert len(cube.faces.keys()) == 6
+
+@pytest.mark.skip
+def test_cube_faces():
+    # assert the faces
+    cube = day_18.Cube(0, 0, 0)
+    assert cube.faces[0] == ((0, 0, 0), (0, 1, 0), (0, 0, 1), (0, 1, 1))
+    assert cube.faces[1] == ((0, 0, 1), (1, 0, 1), (0, 1, 1), (1, 1, 1))
+    assert cube.faces[2] == ((1, 0, 1), (1, 1, 1), (1, 1, 0), (1, 0, 0))
+    assert cube.faces[3] == ((1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 0, 0))
+    
+    assert cube.faces[4] == ((0, 1, 0), (0, 1, 1), (1, 1, 0), (1, 1, 1))
+    assert cube.faces[5] == ((0, 0, 0), (0, 0, 1), (1, 0, 0), (1, 0, 1))
+    all_faces = [cube.faces[i] for i in range(6)]
+    flat_list = [item for sublist in all_faces for item in sublist]
+    counts = Counter(flat_list)
+    for key in counts.keys():
+        assert counts[key] == 3
+
+def test_combine_face():
+    inputs = [(1, 1, 1), (2, 1, 1)]
+    result = day_18.combine_face(inputs)
+    assert result == 10
+    inputs = [(2,2,2),(1,2,2),(3,2,2),(2,1,2),(2,3,2),(2,2,1),(2,2,3),(2,2,4),(2,2,6),(1,2,5),(3,2,5),(2,1,5),(2,3,5)]
+    result = day_18.combine_face(inputs)
+    assert result == 64
+
+@pytest.mark.skip
+def test_mixing_circular_list():
+    base_inputs = [1, 2, -3, 3, -2, 0, 4]
+    queue = day_20.circular_linked_list(base_inputs)
+    queue.mixing(0)
+    assert list(queue.queue) == [2, 1, -3, 3, -2, 0, 4]
+    queue.mixing(1)
+    assert list(queue.queue) == [1, -3, 2, 3, -2, 0, 4]
+    queue.mixing(2)
+    assert list(queue.queue) == [1, 2, 3, -2, -3, 0, 4]
+    queue.mixing(3)
+    assert list(queue.queue) == [1, 2, -2, -3, 0, 3, 4]
+    queue.mixing(4)
+    assert list(queue.queue) == [1, 2, -3, 0, 3, 4, -2]
+    queue.mixing(5)
+    assert list(queue.queue) == [1, 2, -3, 0, 3, 4, -2]
+    queue.mixing(6)
+    assert list(queue.queue) == [1, 2, -3, 4, 0, 3, -2]
+
+@pytest.mark.skip
+@pytest.mark.parametrize("steps, expected", [(1000, 4), (2000, -3), (3000, 2)])
+def test_day_20_1_seq(steps, expected):
+    base_inputs = [1, 2, -3, 3, -2, 0, 4]
+    queue = day_20.circular_linked_list(base_inputs)
+    queue.mix_once()
+    assert list(queue.queue) == [1, 2, -3, 4, 0, 3, -2]
+    assert queue.get_index(steps) == expected
+
+@pytest.mark.skip
+def test_day_20_1():
+    base_inputs = [1, 2, -3, 3, -2, 0, 4]
+    res = day_20.part_1(base_inputs)
+    assert res == 3
+
+def test_day_22_parser():
+    inputs = load_file("tests/test_data/data_2022_22.txt")
+    mapp, instructions, start, _, _ = day_22.parse_map_and_path(inputs)
+    assert len(mapp) == 96
+    assert len([mapp[key] for key in mapp.keys() if mapp[key] == "."]) == 83
+    assert len([mapp[key] for key in mapp.keys() if mapp[key] == "#"]) == 13
+    assert start == 9 + 1j
+    assert instructions == [(10, 1), (5, -1), (5, 1), (10, -1), (4, 1), (5, -1), (5, 0)]
+
+def test_day_22_1(): 
+    inputs = load_file("tests/test_data/data_2022_22.txt")
+    res, score = day_22.part_1(inputs)
+    assert res == complex(8 + 6j)
+    assert score == 6032
+
+@pytest.mark.parametrize("turn, expected", [(0, 1), (1, 1j), (-1, -1j), (2, -1), (-2, -1)])
+def test_rotate_directions(turn, expected):
+    # turns = {'R': 1, 'L': -1, '': 0}
+    directions = [1, 1j, -1, -1j]
+    directions = day_22.rotate_directions(directions, turn)
+    assert directions[0] == complex(expected)

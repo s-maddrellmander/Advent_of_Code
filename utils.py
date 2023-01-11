@@ -47,6 +47,9 @@ class Queue():
     
     def __len__(self):
         return len(self.queue)
+    
+    def clear(self):
+        self.queue.clear()
 
 class Cache(Queue):
     """Cache with max length 
