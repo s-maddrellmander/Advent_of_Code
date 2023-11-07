@@ -9,7 +9,7 @@ executing==1.2.0
 iniconfig==1.1.1
 ipdb==0.13.9
 ipython==8.6.0
-jax==0.3.25
+jax
 jaxlib==0.3.25
 jedi==0.18.2
 jsonargparse==4.17.0
