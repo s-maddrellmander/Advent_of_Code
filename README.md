@@ -1,5 +1,6 @@
 # Advent_of_Code ![Advent of Code Logo](logo.png)
 [![Python application](https://github.com/s-maddrellmander/Advent_of_Code/actions/workflows/python-app.yml/badge.svg)](https://github.com/s-maddrellmander/Advent_of_Code/actions/workflows/python-app.yml)
+
 *Parent repository for Advent of Code - a personal sandbox for development and learning.*
 
 ![Advent of Code Repository Image](repo_image.png)
