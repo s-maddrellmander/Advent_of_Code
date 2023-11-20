@@ -30,11 +30,10 @@ def main():
 
     # Dynamically import the day module from the correct year package
     try:
-        # module = getattr(sys.modules['solutions.year_2023'], day_module_name)
         module = importlib.import_module(f'solutions.year_2023.{day_module_name}')
     except ModuleNotFoundError as e:
         print(f"Module for {day_module_name} not found.")
-        return
+        return e
 
     if part:
         run_solution(module, part, data)
