@@ -1,6 +1,5 @@
 from utils import load_file, Timer
 import logging
-import torch
 
 def get_register(inputs):
     regs = {line.split(" ")[0]: 0 for line in inputs}

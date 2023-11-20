@@ -1,6 +1,5 @@
 from utils import load_file, Timer
 import logging
-import torch
 
 def get_groups(stream):
     # Want a finite state machine or something here
