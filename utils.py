@@ -103,14 +103,14 @@ class Cache(Queue):
 class AttributeDict(dict):
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__  # type: ignore
-    __delattr__ = dict.__delitem__ # type: ignore
+    __delattr__ = dict.__delitem__  # type: ignore
 
 
 class TreeNode:
     def __init__(self, name, parent, size=0) -> None:
         self.name = name
         self.parent = parent
-        self.sub_tree: List[TreeNode] = [] 
+        self.sub_tree: List[TreeNode] = []
         self.leaves = []  # type: ignore
         self.size = size
 
