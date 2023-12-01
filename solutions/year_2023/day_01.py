@@ -2,11 +2,11 @@
 import re
 from typing import List, Tuple
 
+import numpy as np
+
 from data_parser import load_file
 from logger_config import logger
 from utils import Timer
-
-import numpy as np
 
 """
 This problem takes the first and last didgets in the string and

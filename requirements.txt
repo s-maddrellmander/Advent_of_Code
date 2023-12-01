@@ -5,4 +5,5 @@ black
 isort
 colorlog
 pytest-mock
+mocker
 pytest-cov
