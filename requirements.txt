@@ -4,3 +4,5 @@ tqdm
 black
 isort
 colorlog
+pytest-mock
+pytest-cov
