@@ -1,6 +1,7 @@
 import logging
 import time
 from collections import deque
+from typing import List, Optional, Union
 
 from logger_config import logger as LOGGER
 
@@ -101,16 +102,16 @@ class Cache(Queue):
 
 class AttributeDict(dict):
     __getattr__ = dict.__getitem__
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
+    __setattr__ = dict.__setitem__  # type: ignore
+    __delattr__ = dict.__delitem__ # type: ignore
 
 
 class TreeNode:
     def __init__(self, name, parent, size=0) -> None:
         self.name = name
         self.parent = parent
-        self.sub_tree = []
-        self.leaves = []
+        self.sub_tree: List[TreeNode] = [] 
+        self.leaves = []  # type: ignore
         self.size = size
 
     def add_sub_tree(self, sub_tree):
