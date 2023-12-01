@@ -1,5 +1,4 @@
 # solutions/year_2023/day_01.py
-import re
 from typing import List, Tuple
 
 import numpy as np
@@ -9,7 +8,7 @@ from logger_config import logger
 from utils import Timer
 
 """
-This problem takes the first and last didgets in the string and
+This problem takes the first and last digits in the string and
 combines them into a two digit number.
 
 """
@@ -88,3 +87,22 @@ def part2(input_data: List[str]) -> int:
             # logger.debug(f"first_digit: {first_digit}, last_digit: {last_digit}, {first_digit + last_digit} {line}")
             result += int(first_digit + last_digit)
     return result
+
+
+# import numpy as np
+
+# def part1(input_data: List[str]) -> int:
+#     # Convert the list of strings to a numpy array
+#     input_data_np = np.array(input_data)
+
+#     # Extract the first and last characters from each string
+#     first_digits = np.char.lstrip(input_data_np, '0')  # remove leading zeros
+#     first_digits = np.char.slice(first_digits, start=0, stop=1).astype(int)  # get first digit
+
+#     last_digits = np.char.rstrip(input_data_np, '0')  # remove trailing zeros
+#     last_digits = np.char.slice(last_digits, start=-1).astype(int)  # get last digit
+
+#     # Compute the sum
+#     result = np.sum(first_digits + last_digits)
+
+#     return result

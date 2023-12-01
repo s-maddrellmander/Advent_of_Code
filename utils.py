@@ -2,6 +2,8 @@ import logging
 import time
 from collections import deque
 
+from logger_config import logger as LOGGER
+
 
 def select_day(args, day):
     if args.day == 0:
@@ -19,14 +21,14 @@ def load_file(filename):
 
 
 class Timer:
-    def __init__(self, name, logger=None, log_level=None):
+    def __init__(self, name, logger=None, log_level=0):
         self.name = name
-        self.logger = logger
-        self.log_level = log_level
+        self.logger = LOGGER
+        self.log_level = True
 
     def _log(self, message):
-        if self.logger and self.log_level:
-            self.logger.log(self.log_level, message)
+        if self.logger:
+            self.logger.info(message)
         else:
             print(message)
 
