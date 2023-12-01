@@ -1,6 +1,5 @@
 numpy
 pytest
-jax
 tqdm
 black
 isort

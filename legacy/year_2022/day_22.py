@@ -1,13 +1,16 @@
 import logging
-from utils import load_file
 import re
 from collections import deque
 
+from utils import load_file
+
+
 def parse_map_and_path(inputs):
-    turns = {'R': 1, 'L': -1, '': 0}
-    instructions = [(int(s), turns[t]) for (s,t) in re.findall('(\d+)([RL]?)', inputs[-1])]
-    
-    
+    turns = {"R": 1, "L": -1, "": 0}
+    instructions = [
+        (int(s), turns[t]) for (s, t) in re.findall("(\d+)([RL]?)", inputs[-1])
+    ]
+
     mapp = dict()
     start = None
     _width = 0
@@ -18,19 +21,23 @@ def parse_map_and_path(inputs):
                 if start is None:
                     start = complex(x, y)
                 mapp[complex(x, y)] = val
-                if x > _width: _width = x
-                if y > _depth: _depth = y
+                if x > _width:
+                    _width = x
+                if y > _depth:
+                    _depth = y
     return mapp, instructions, start, _width, _depth
-        
+
+
 def rotate_directions(directions, turn):
     directions = deque(directions)
     directions.rotate(-turn)
     directions = list(directions)
     return directions
 
+
 def part_1(inputs):
     mapp, instructions, start, _width, _depth = parse_map_and_path(inputs)
-    directions = [1, 1j, -1, -1j] # R D L U
+    directions = [1, 1j, -1, -1j]  # R D L U
     path = dict()
     position = start
     facing = 0
@@ -38,7 +45,7 @@ def part_1(inputs):
     depth = max([x.imag for x in mapp.keys()])
     assert _width == width
     assert _depth == _depth
-    for (steps, turn) in instructions:
+    for steps, turn in instructions:
         for _ in range(steps):
             new = position
             new += directions[facing]
@@ -51,8 +58,8 @@ def part_1(inputs):
                 y = new.imag
                 y = depth if y < 1 else y
                 y = 1 if y > depth else y
-                new = x + y*1j
-            if mapp[new] == '.':
+                new = x + y * 1j
+            if mapp[new] == ".":
                 position = new
                 # if switch:
                 #     facing = new_facing
@@ -70,6 +77,7 @@ def part_1(inputs):
 def part_2(inputs):
     # Same as part 1 but the wrapping rules are different
     pass
+
 
 def control():
     inputs = load_file("year_2022/data/data_22.txt")

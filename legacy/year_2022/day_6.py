@@ -1,5 +1,7 @@
 import logging
-from utils import load_file, Queue, Cache
+
+from utils import Cache, Queue, load_file
+
 
 def part_1(queue):
     cache = Cache(max_length=4)
@@ -11,7 +13,8 @@ def part_1(queue):
                 logging.info(f"Part 1 {i}")
                 return i
         i += 1
-        
+
+
 def part_2(queue):
     cache = Cache(max_length=14)
     i = 1

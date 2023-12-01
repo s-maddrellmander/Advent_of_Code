@@ -1,6 +1,7 @@
 import logging
-from utils import load_file
-from utils import Queue
+
+from utils import Queue, load_file
+
 
 class CathodRay:
     def __init__(self) -> None:
@@ -10,9 +11,8 @@ class CathodRay:
         self.clock_history = []
         self.buffer = 0
         self.history = {}
-    
+
     def update_register(self, val, clock):
-        
         if val == 0:
             self.clock += 1
             self.register_history.append(self.register)
@@ -23,23 +23,25 @@ class CathodRay:
             self.register_history.append(self.register)
             self.clock_history.append(self.clock)
             self.history[self.clock] = self.register
-            
+
             self.clock += 1
             self.register_history.append(self.register)
             self.clock_history.append(self.clock)
             self.history[self.clock] = self.register
             self.register += val
-    
+
     def get_register_from_cycle(self, cycle):
         # Get the cycle history index
         # index = self.clock_history.index(cycle)
         # return self.register_history[index]
         return self.history[cycle]
-    
+
+
 def loop_instructions(cathode_ray, inputs):
     for line in inputs:
         val, cycles = parse_line(line)
         cathode_ray.update_register(val, cycles)
+
 
 def get_results_from_index(cathode_ray, index_list):
     totals = []
@@ -55,10 +57,12 @@ def parse_line(line):
     else:
         return int(line.split(" ")[1]), 2
 
+
 def update_pixels(X, cycles, pixels):
-	pos = (cycles - 1) % 40
-	if pos in {X-1, X, X+1}:
-		pixels[cycles - 1] = "#"
+    pos = (cycles - 1) % 40
+    if pos in {X - 1, X, X + 1}:
+        pixels[cycles - 1] = "#"
+
 
 def get_image(cathode_ray):
     pixels = ["." for _ in range(240)]
@@ -67,6 +71,7 @@ def get_image(cathode_ray):
         update_pixels(val, i, pixels)
     pixels = "".join(x for x in pixels)
     return pixels
+
 
 def part_1(inputs):
     cathode_ray = CathodRay()
@@ -84,9 +89,7 @@ def part_2(inputs):
     pixels = get_image(cathode_ray)
     # Display the Cathode Ray Tube
     for i in range(6):
-        print(pixels[i*40:i*40 + 40])
-    
-
+        print(pixels[i * 40 : i * 40 + 40])
 
 
 def control():

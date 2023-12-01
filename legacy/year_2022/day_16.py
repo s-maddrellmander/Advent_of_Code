@@ -1,9 +1,11 @@
 import logging
-from utils import load_file, Queue
 import re
+from copy import deepcopy
+
 import numpy as np
 from tqdm import tqdm
-from copy import deepcopy
+
+from utils import Queue, load_file
 
 
 def get_max_flow(graph):
@@ -12,11 +14,12 @@ def get_max_flow(graph):
         total += graph.nodes[node].flow
     return total
 
-class Graph():
+
+class Graph:
     def __init__(self) -> None:
         self.nodes = {}
         self.clock = 0
-            
+
     def test_graph(self):
         graph_keys = self.nodes.keys()
         children_keys = []
@@ -24,9 +27,9 @@ class Graph():
             children_keys.append(self.nodes[key].children)
         children_keys = [item for sublist in children_keys for item in sublist]
         assert sorted(list(graph_keys)) == sorted(list(set(children_keys)))
-        
-    
-class Node():
+
+
+class Node:
     def __init__(self, name, flow, children) -> None:
         self.name = name
         self.flow = flow
@@ -34,8 +37,7 @@ class Node():
         self.open = False
         self.opened_at = None
         self.visited = 0
-    
-    
+
 
 class Path:
     def __init__(self, path, max_flow) -> None:
@@ -45,39 +47,43 @@ class Path:
         self.total_flow = 0
         self.max_flow = max_flow
         self.valves_on = []
-    
+
     def __cmp__(self, other):
         return self.total_flow_rate < other.total_flow_rate
-    
+
     def step_total_flow(self):
         self.total_flow += self.total_flow_rate
-    
+
     def vist(self, node):
         self.clock += 1
         self.step_total_flow()
-        if node.flow > 0 and node.name not in self.valves_on:  # This is a slow lookup in a list O(n), not O(1)
+        if (
+            node.flow > 0 and node.name not in self.valves_on
+        ):  # This is a slow lookup in a list O(n), not O(1)
             self.clock += 1
             self.step_total_flow()
             # Add the node flow to the total flow
             self.valves_on.append(node.name)
             self.total_flow_rate += node.flow
-    
+
     def check_total_flow(self):
         # The simple breadth first is really slow
         # So we check if the max flow rate has been found yet, then fast forward
         if self.total_flow_rate == self.max_flow:
-            import ipdb; ipdb.set_trace()
+            import ipdb
+
+            ipdb.set_trace()
             while self.clock <= 30:
                 self.self.clock += 1
                 self.step_total_flow()
 
 
-
 def parse_graph_line(line):
     children = re.findall(r"[A-Z]{2}", line)
     node = children.pop(0)
-    flow = int(re.findall(r'-?\d+', line)[0])
+    flow = int(re.findall(r"-?\d+", line)[0])
     return node, flow, children
+
 
 def build_graph(inputs):
     # We can tell
@@ -107,7 +113,7 @@ def breadth_first_search(graph: Graph, root: str, max_flow: int):
             # import ipdb; ipdb.set_trace()
         path = queue.dequeue()
         counter += 1
-        if path.clock == 31 :
+        if path.clock == 31:
             thirty_min_paths.append(path)
             continue
         # Here we get the last node in the path
@@ -124,10 +130,13 @@ def breadth_first_search(graph: Graph, root: str, max_flow: int):
             # graph.nodes[next_node].visited = True
             queue.enqueue(new_path)
     print(len(thirty_min_paths))
-    
-    print(sorted(thirty_min_paths, key=lambda x: x.total_flow, reverse=True)[0].total_flow) 
+
+    print(
+        sorted(thirty_min_paths, key=lambda x: x.total_flow, reverse=True)[0].total_flow
+    )
     # import ipdb; ipdb.set_trace()
-    pass        
+    pass
+
 
 def part_1(inputs):
     # inputs = ["Valve AA has flow rate=0; tunnels lead to valves DD, II, BB",
@@ -145,10 +154,11 @@ def part_1(inputs):
 
     max_flow = get_max_flow(graph)
     breadth_first_search(graph, "AA", max_flow)
-   
+
 
 def part_2(inputs):
     pass
+
 
 def control():
     inputs = load_file("year_2022/data/data_16.txt")

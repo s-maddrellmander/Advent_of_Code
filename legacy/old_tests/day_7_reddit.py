@@ -59,7 +59,7 @@ def checkDeletable(currDir: Directory):
         checkDeletable(sub)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     with open("year_2022/data/data_7.txt", "r") as f:
         raw = [line.replace("\n", "") for line in f.readlines()]
 
@@ -96,4 +96,6 @@ if __name__ == '__main__':
 
     checkDeletable(fileSystem)
 
-    print(f"Solution 2: {min([possibleDelete.size() for possibleDelete in possibleDeletes])}")
+    print(
+        f"Solution 2: {min([possibleDelete.size() for possibleDelete in possibleDeletes])}"
+    )

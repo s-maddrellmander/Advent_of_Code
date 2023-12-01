@@ -1,12 +1,14 @@
 import logging
+
 # Some issues around JAX imports need this here
 logging.basicConfig(level="INFO")
 
-from jsonargparse import ArgumentParser
-import year_2022.day_selector
 import year_2017.day_selector
+import year_2022.day_selector
+from jsonargparse import ArgumentParser
 
-from utils import select_day, Timer
+from utils import Timer, select_day
+
 
 def main(args):
     # TODO: Need to split these into seperate files
@@ -14,6 +16,7 @@ def main(args):
         year_2017.day_selector.day_selector(args)
     elif args.year == 2022:
         year_2022.day_selector.day_selector(args)
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()

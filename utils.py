@@ -1,5 +1,5 @@
-import time
 import logging
+import time
 from collections import deque
 
 
@@ -11,50 +11,74 @@ def select_day(args, day):
     else:
         return False
 
+
 def load_file(filename):
     with open(filename) as f:
-        lines = [line.rstrip('\n') for line in f]
+        lines = [line.rstrip("\n") for line in f]
     return lines
 
 
 class Timer:
-    def __init__(self, name):
+    def __init__(self, name, logger=None, log_level=None):
         self.name = name
+        self.logger = logger
+        self.log_level = log_level
+
+    def _log(self, message):
+        if self.logger and self.log_level:
+            self.logger.log(self.log_level, message)
+        else:
+            print(message)
 
     def __enter__(self):
-        logging.info(f"\U00002B50 {self.name}:")
-        self.t = time.time()
+        self.start_time = time.perf_counter()
+        self._log(f"⭐ {self.name}: Timer started.")
+        return self
 
-    def __exit__(self, *args, **kwargs):
-        elapsed_time = time.time() - self.t
-        elapsed_time = time.strftime("%H:%M:%S", time.gmtime(elapsed_time))
-        # Timedelta makes for human readable format - not safe for maths operations
-        logging.info(f"\U0001F551 Elapsed time for {self.name}: {elapsed_time} (HH:MM:SS)")
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        elapsed_time = time.perf_counter() - self.start_time
+        hours, rem = divmod(elapsed_time, 3600)
+        minutes, seconds = divmod(rem, 60)
+        # Formatting time to HH:MM:SS.mmm (milliseconds)
+        elapsed_time_str = f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}.{int((seconds - int(seconds)) * 1000):03}"
+
+        if exc_type is not None:
+            self._log(f"⚠️ {self.name}: Timer stopped with an exception: {exc_val}")
+        else:
+            self._log(
+                f"⏱️ Elapsed time for {self.name}: {elapsed_time_str} (HH:MM:SS.mmm)"
+            )
+        return False  # Do not suppress exceptions
+
+    def get_elapsed_time(self):
+        return time.perf_counter() - self.start_time
 
 
-class Queue():
+class Queue:
     def __init__(self) -> None:
-        self.queue = deque()
-    
-    def build_queue(self, inputs: str) -> deque:
+        self.queue = deque()  # type: deque
+
+    def build_queue(self, inputs: str):
         tmp = [self.enqueue(char) for char in inputs]
 
     def dequeue(self):
         return self.queue.popleft()
-    
+
     def enqueue(self, x):
         self.queue.append(x)
-    
+
     def __len__(self):
         return len(self.queue)
-    
+
     def clear(self):
         self.queue.clear()
 
+
 class Cache(Queue):
-    """Cache with max length 
+    """Cache with max length
     This class will return the elements automatically if the length exceeds max
     """
+
     def __init__(self, max_length) -> None:
         super().__init__()
         self.max_length = max_length
@@ -64,11 +88,11 @@ class Cache(Queue):
             return self.dequeue()
         else:
             return None
-    
+
     def enqueue(self, x):
         super().enqueue(x)
         return self.enforce_max_length()
-    
+
     def dequeue(self):
         return super().dequeue()
 
@@ -86,9 +110,9 @@ class TreeNode:
         self.sub_tree = []
         self.leaves = []
         self.size = size
-    
+
     def add_sub_tree(self, sub_tree):
         self.sub_tree.append(sub_tree)
-    
+
     def add_leaf(self, leaf):
         self.leaves.append(leaf)

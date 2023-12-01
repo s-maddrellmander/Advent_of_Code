@@ -1,6 +1,7 @@
-import logging
-from utils import load_file
 import cmath
+import logging
+
+from utils import load_file
 
 
 def path_to_rock_coord(line):
@@ -23,27 +24,27 @@ def path_to_rock_coord(line):
                 else:
                     factor = -1
                 coords.append(complex(start[0] + factor * j, start[1]))
-    
+
     return list(set(coords))
+
 
 class Sand:
     def __init__(self, source) -> None:
         self.loc = source
-    
+
     def step(self, cave_map):
         # Step the sand, first, try down, then diag left, then diag right
         if self.loc + complex(0, 1) not in cave_map:
-            self.loc += + complex(0, 1)
-            return True 
+            self.loc += +complex(0, 1)
+            return True
         elif self.loc + complex(-1, 1) not in cave_map:
-            self.loc += + complex(-1, 1)
-            return True 
+            self.loc += +complex(-1, 1)
+            return True
         elif self.loc + complex(1, 1) not in cave_map:
-            self.loc += + complex(1, 1)
-            return True   
+            self.loc += +complex(1, 1)
+            return True
         else:
             return False
-        
 
 
 class Map:
@@ -53,22 +54,22 @@ class Map:
         self.rock = []
         self.sand = []
         self.abyss = None  # This is the lowest coordinate we have, below this is abyss
-    
+
     def set_abyss(self):
         min_val = max([y.imag for y in self.rock])
         self.abyss = min_val
-     
+
     def set_rock(self, rock):
         for loc in rock:
             self.map[loc] = "#"
             self.rock.append(loc)
         self.set_abyss()
-    
+
     def set_floor(self, rock):
         for loc in rock:
             self.map[loc] = "#"
             self.rock.append(loc)
-            
+
     def fill_with_sand(self, part=1):
         grain = Sand(self.source)
         state = True
@@ -81,7 +82,7 @@ class Map:
         self.sand.append(grain.loc)
         self.map[grain.loc] = "o"
         return False
-                    
+
 
 def get_coords(inputs):
     coords = []
@@ -89,7 +90,8 @@ def get_coords(inputs):
         segment = path_to_rock_coord(path)
         coords.extend(segment)
     coords = list(set(coords))
-    return coords  
+    return coords
+
 
 def part_1(inputs):
     cave = Map()
@@ -104,10 +106,11 @@ def part_1(inputs):
     logging.info(f"Part 1 {sand_counter}")
     return sand_counter
 
+
 def part_2(inputs):
     cave = Map()
     rock_coords = get_coords(inputs)
-    
+
     cave.set_rock(rock_coords)
     floor_level = int(cave.abyss + 2)
     # Update the abyss
@@ -120,9 +123,10 @@ def part_2(inputs):
     while test_point is False:
         test_point = cave.fill_with_sand(part=2)
         sand_counter += 1
-            
+
     logging.info(f"Part 2: {sand_counter}")
     return sand_counter
+
 
 def control():
     inputs = load_file("year_2022/data/data_14.txt")

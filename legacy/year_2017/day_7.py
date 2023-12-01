@@ -1,5 +1,7 @@
-from utils import load_file, Timer
 import logging
+
+from utils import Timer, load_file
+
 
 def parse_input_to_graph(input):
     """Assume nodes create directed graph."""
@@ -26,7 +28,7 @@ def parse_input_to_graph(input):
                 if node not in graph:
                     graph[node] = dict(rec=[base_node[0]], out=[], value=None)
                 else:
-                    if base_node[0] not in graph[node]["rec"]: 
+                    if base_node[0] not in graph[node]["rec"]:
                         graph[node]["rec"].append(base_node[0])
     return graph
 
@@ -43,11 +45,12 @@ def part_1(graph):
     logging.info(f"Head node {current}")
     return current
 
+
 def part_2(graph, base_node):
     """Balance the subtowers - there's only one weight off
     - 3x trees - ones of the sums is different to the others
     """
-    visited = set() # Set to keep track of visited nodes.
+    visited = set()  # Set to keep track of visited nodes.
 
     def dfs(visited, graph, node, runner):
         if node not in visited:
@@ -67,6 +70,7 @@ def part_2(graph, base_node):
 
     return diff, sums
 
+
 def control():
     # input = load_file("year_2017/data/data_7.txt")
     input = load_file("tests/test_data/data_2017_7_1.txt")
@@ -75,6 +79,3 @@ def control():
         base_node = part_1(input)
     with Timer("Day 7 Part 2"):
         part_2(input, base_node)
-
-
-

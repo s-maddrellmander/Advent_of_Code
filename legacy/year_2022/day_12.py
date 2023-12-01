@@ -1,7 +1,10 @@
-import logging
-import numpy as np
-from utils import load_file
 import cmath
+import logging
+
+import numpy as np
+
+from utils import load_file
+
 
 def get_start_end(inputs):
     for i, line in enumerate(inputs):
@@ -11,10 +14,11 @@ def get_start_end(inputs):
             end = complex(i, line.index("E"))
     return start, end
 
+
 def convert_alpha_to_numeric(inputs):
     # Parse the string per line to grid, then to number
     # Find the start and end locations
-    start, end  = get_start_end(inputs)
+    start, end = get_start_end(inputs)
     grid = {}
     for i, line in enumerate(inputs):
         for j, x in enumerate(line):
@@ -23,19 +27,20 @@ def convert_alpha_to_numeric(inputs):
     grid[complex(end)] = 26
     # Return the grid as a complex dict
     return grid, start, end
-    
+
+
 class Climber:
     def __init__(self, start, end, map) -> None:
         self.location = start
         self.destination = end
         self.map_store = map
         self.map = self._map
-    
+
     def _map(self, coord):
         if coord in self.map_store.keys():
             return self.map_store[coord]
         return
-            
+
     def get_options(self):
         def is_valid(a, b):
             if a == None:
@@ -46,24 +51,26 @@ class Climber:
                 return False
 
         cardinals = [complex(0, 1), complex(0, -1), complex(1, 0), complex(-1, 0)]
-        options = [self.location+direction for direction in cardinals if 
-                   is_valid(self.map(self.location + direction), self.map(self.location))]
+        options = [
+            self.location + direction
+            for direction in cardinals
+            if is_valid(self.map(self.location + direction), self.map(self.location))
+        ]
         return options
 
-
     # Breadth First Search will work nicely here
-    
+
     def bfs_shortest_path(self, start, goal):
         # finds shortest path between 2 nodes of a graph using BFS
         # keep track of explored nodes
         explored = []
         # keep track of all the paths to be checked
         queue = [[start]]
-    
+
         # return path if start is goal
         if start == goal:
             return "That was easy! Start = goal"
-    
+
         # keeps looping until all possible paths have been checked
         while queue:
             # pop the first path from the queue
@@ -84,26 +91,25 @@ class Climber:
                     # return path if neighbour is goal
                     if neighbour == goal:
                         return new_path
-    
+
                 # mark node as explored
                 explored.append(node)
-    
+
         # in case there's no path between the 2 nodes
         return False
-    
-    
-        
-    
-# Shortest Path - this is a classic Dijkstra problem 
+
+
+# Shortest Path - this is a classic Dijkstra problem
 # Prim's alogrithm in O(V^2)
 # 1. Build the map into a graph
 # 2. Then use a search algorithm
-# 3. Complex number for x,y coordinate system 
+# 3. Complex number for x,y coordinate system
 # 4. Build a dict for the map with complex keys
-# 4.1. Then build the tree from this dict, each step recursively adds children 
+# 4.1. Then build the tree from this dict, each step recursively adds children
 #      from the subset of the 4 directons that
 #      (a) Haven't been visited
-#      (b) Are valid steps  
+#      (b) Are valid steps
+
 
 def part_1(inputs):
     parsed, start, end = convert_alpha_to_numeric(inputs)
@@ -111,6 +117,7 @@ def part_1(inputs):
     path = bfs.bfs_shortest_path(start, end)[:-1]
     logging.info(f"Part 1: {len(path)}")
     return len(path)
+
 
 def part_2(inputs):
     parsed, start, end = convert_alpha_to_numeric(inputs)
@@ -124,6 +131,7 @@ def part_2(inputs):
     shortest = min(senic_paths_lengths)
     logging.info(f"Part 2: {shortest}")
     return shortest
+
 
 def control():
     inputs = load_file("year_2022/data/data_12.txt")
