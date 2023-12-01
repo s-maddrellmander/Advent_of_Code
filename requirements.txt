@@ -3,3 +3,4 @@ pytest
 tqdm
 black
 isort
+colorlog
