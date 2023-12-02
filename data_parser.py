@@ -4,7 +4,6 @@ from logger_config import logger
 def load_file(filename):
     try:
         with open(filename, "r") as file:
-            logger.info(f"Opening file {filename}")
             lines = [line.rstrip("\n") for line in file]
             logger.info(f"Successfully read file {filename}")
             return lines

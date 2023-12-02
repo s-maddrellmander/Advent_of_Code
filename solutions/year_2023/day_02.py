@@ -59,37 +59,39 @@ def process_input(input_data) -> np.array:
 
 
 def part1(input_data: List[str]) -> str | int:
-    # Your solution for part 1 goes here
-    # This is an (n_games, n_rounds, 3) np.array
-    processed_data = process_input(input_data)
-    # Max values for the red, green and blue
-    num_rounds = processed_data.shape[1]
-    num_games = processed_data.shape[0]
-    max_values = [12, 13, 14]
-    logger.info("Take the max values and shape to (num_games, num_rounds, 3)")
-    max_values = np.tile(max_values, (num_games, num_rounds, 1))
+    with Timer("Part1"):
+        # Your solution for part 1 goes here
+        # This is an (n_games, n_rounds, 3) np.array
+        processed_data = process_input(input_data)
+        # Max values for the red, green and blue
+        num_rounds = processed_data.shape[1]
+        num_games = processed_data.shape[0]
+        max_values = [12, 13, 14]
+        logger.info("Take the max values and shape to (num_games, num_rounds, 3)")
+        max_values = np.tile(max_values, (num_games, num_rounds, 1))
 
-    # Compare the processed_data with the max_values
-    # Make a boolean array of shape (num_games, num_rounds, 3) for whether
-    # processed_data is less than max_values
-    possible = processed_data <= max_values
-    # Then get the row indicies where all values are true for all rounds in the game
-    # i.e. where the game is possible - this is a boolean array of shape (num_games)
-    possible = np.all(possible, axis=(1, 2))
-    # Then we convert to integers and sum their indexes to get the number of possible games
-    # get the indexes of the possible games, starting at 1
-    valid = np.where(possible)
+        # Compare the processed_data with the max_values
+        # Make a boolean array of shape (num_games, num_rounds, 3) for whether
+        # processed_data is less than max_values
+        possible = processed_data <= max_values
+        # Then get the row indicies where all values are true for all rounds in the game
+        # i.e. where the game is possible - this is a boolean array of shape (num_games)
+        possible = np.all(possible, axis=(1, 2))
+        # Then we convert to integers and sum their indexes to get the number of possible games
+        # get the indexes of the possible games, starting at 1
+        valid = np.where(possible)
 
-    num_possible = np.sum(valid) + valid[0].shape[0]
+        num_possible = np.sum(valid) + valid[0].shape[0]
     return num_possible
 
 
 def part2(input_data: List[str]) -> str | int:
-    processed_data = process_input(input_data)
-    # We are going to max pool the array along the color axis
-    # i.e. we want to get the max number of each color for each game
-    max_colors = np.max(processed_data, axis=1)
-    assert max_colors.shape == (len(input_data), 3)
-    # Then we multiply the max colors together and sum them
-    product = np.prod(max_colors, axis=1)
-    return np.sum(product)
+    with Timer("Part2"):
+        processed_data = process_input(input_data)
+        # We are going to max pool the array along the color axis
+        # i.e. we want to get the max number of each color for each game
+        max_colors = np.max(processed_data, axis=1)
+        assert max_colors.shape == (len(input_data), 3)
+        # Then we multiply the max colors together and sum them
+        product = np.prod(max_colors, axis=1)
+        return np.sum(product)
