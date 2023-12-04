@@ -4,6 +4,7 @@ from typing import List, Optional, Union
 from logger_config import logger
 from utils import Timer
 
+
 def part1(input_data: Optional[List[str]]) -> Union[str, int]:
     """
     Solve part 1 of the day's challenge.
@@ -20,6 +21,7 @@ def part1(input_data: Optional[List[str]]) -> Union[str, int]:
     with Timer("Part 1"):
         # Your solution for part 1 goes here
         return "Part 1 solution not implemented."
+
 
 def part2(input_data: Optional[List[str]]) -> Union[str, int]:
     """
