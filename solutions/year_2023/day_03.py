@@ -105,7 +105,121 @@ def tuple_array_to_array(array) -> np.array:
     return np.array([array[0], array[1]])
     
     
+def parse_schematic(schematic):
+        return [list(line) for line in schematic.splitlines()]
+
+def is_digit(c):
+    return c.isdigit()
+
+def get_adjacent_cells(x, y, grid):
+    offsets = [-1, 0, 1]
+    for dx in offsets:
+        for dy in offsets:
+            if dx == 0 and dy == 0:
+                continue
+            new_x, new_y = x + dx, y + dy
+            if 0 <= new_x < len(grid[0]) and 0 <= new_y < len(grid):
+                yield new_x, new_y
+
+def extract_number(x, y, grid):
+    num_str = ''
+    while x < len(grid[0]) and is_digit(grid[y][x]):
+        num_str += grid[y][x]
+        x += 1
+    return int(num_str) if num_str else None
+
+def sum_part_numbers(schematic):
+    grid = parse_schematic(schematic)
+    part_numbers = set()
+
+    for y in range(len(grid)):
+        for x in range(len(grid[0])):
+            if grid[y][x] not in {'.', ' '} and not grid[y][x].isdigit():
+                for adj_x, adj_y in get_adjacent_cells(x, y, grid):
+                    if grid[adj_y][adj_x].isdigit():
+                        # Trace the number horizontally
+                        start_x = adj_x
+                        while start_x > 0 and grid[adj_y][start_x - 1].isdigit():
+                            start_x -= 1
+                        num_str = ''
+                        while start_x < len(grid[0]) and grid[adj_y][start_x].isdigit():
+                            num_str += grid[adj_y][start_x]
+                            start_x += 1
+                        part_numbers.add(int(num_str))
+    logger.info(part_numbers)
+    return sum(part_numbers)
+
     
+def one_last_go(input_data: List[str]) -> np.array:
+    save = []
+    # Split grid on new lines
+    grid = input_data.split("\n")
+    # grid = [line for line in grid]
+    # Pad the grid with . to avoid index errors all around the grid
+    grid = ["." + line + "." for line in grid]
+    # import ipdb; ipdb.set_trace()
+    # Now add top and bottom rows of .
+    grid = ["." * len(grid[0])] + grid + ["." * len(grid[0])]
+    # import ipdb; ipdb.set_trace()
+    
+    logger.info(grid)
+    for i in range(len(grid)):
+        for j in range(1, len(grid[0]) -1):
+            tmp = ""
+            logger.info((i, j))
+            if grid[i][j].isdigit():
+                # Check the block around the 3 digit number for wildcards
+                for k in range(-1, 2):
+                    for l in range(-1, 2):
+                        if grid[i+k][j+l] in ["*", "@", "#", "$", "+", "-", "=", "%", "&", "/"]:            
+                            tmp += grid[i][j]
+                            if grid[i][j+1].isdigit():
+                                tmp += grid[i][j+1]
+                                if grid[i][j+2].isdigit():
+                                    tmp += grid[i][j+2]
+                            save.append(int(tmp))
+            j += 3
+    return sum(save)
+
+def final_go(input_data: List[str]) -> np.array:
+    grid = input_data.split("\n")
+    #  Pad the grid with . to avoid index errors all around the grid
+    grid = ["." + line + "." for line in grid]
+    # import ipdb; ipdb.set_trace()
+    # Now add top and bottom rows of .
+    grid = ["." * len(grid[0])] + grid + ["." * len(grid[0])]
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
+    numbers = []
+    to_check = []
+    for i in range(len(grid)):
+        for j in range(1, len(grid[0]) -1):
+            tmp = ""
+            jump = 0
+            if grid[i][j].isdigit():
+                tmp += grid[i][j]
+                if grid[i][j+1].isdigit():
+                    tmp += grid[i][j+1]
+                    jump += 1
+                    if grid[i][j+2].isdigit():
+                        tmp += grid[i][j+2]
+                        jump += 1
+                # Save the number and it's coordinates for all numbers
+                numbers.append({int(tmp): [(i, j), (i, j+1), (i, j+2)]})
+            j += jump
+            if grid[i][j] in ["*", "@", "#", "$", "+", "-", "=", "%", "&", "/"]:
+                # Then add the coordinates in a ring around the widlcard
+                to_check.append([(i+k, j+l) for k in range(-1, 2) for l in range(-1, 2)])
+    # Then we want to count all the numbers who have a coordinate in the list to_check
+    # import ipdb; ipdb.set_trace()
+    for number in numbers:
+        for num, coords in number.items():
+            logger.info((num, coords))
+            for coord in coords:
+                logger.info(coord)
+                if coord in to_check:
+                    logger.info(num, coord) 
+                    
+    return -1       
     
 
 def part1(input_data: Optional[List[str]]) -> Union[str, int]:
@@ -123,18 +237,22 @@ def part1(input_data: Optional[List[str]]) -> Union[str, int]:
 
     with Timer("Part 1"):
         # Process the input data into a 2D numpy array
-        grid = process_array(input_data)
-        # Find the locations of all wildcards (-ve values)
-        wildcards = tuple_array_to_array(get_wildcards(grid))
-        # Find the locations of all numbers (positive values)
-        numbers = tuple_array_to_array(get_numbers(grid))
-        # Check if any of the wildcards are adjacent to any of the numbers
-        is_adjacent = find_adjacent_numbers(wildcards, numbers)
-        # Now we need to find which numbers are part of a sequence of numbers in the array
-        number_sequences = get_number_sequences(grid, numbers, np.array([is_adjacent[1], is_adjacent[0]]))
-         
+        # grid = process_array(input_data)
+        # # Find the locations of all wildcards (-ve values)
+        # wildcards = tuple_array_to_array(get_wildcards(grid))
+        # # Find the locations of all numbers (positive values)
+        # numbers = tuple_array_to_array(get_numbers(grid))
+        # # Check if any of the wildcards are adjacent to any of the numbers
+        # is_adjacent = find_adjacent_numbers(wildcards, numbers)
+        # # Now we need to find which numbers are part of a sequence of numbers in the array
+        # number_sequences = get_number_sequences(grid, numbers, np.array([is_adjacent[1], is_adjacent[0]]))
         
-        return -1
+        # Convert list of string to list with /n
+        schematic = "\n".join(input_data)
+        
+        return sum_part_numbers(schematic)
+        
+        # return -1
 
 def part2(input_data: Optional[List[str]]) -> Union[str, int]:
     """

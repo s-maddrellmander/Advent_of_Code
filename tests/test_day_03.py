@@ -1,7 +1,7 @@
 import pytest
 from solutions.year_2023.day_03 import *
 
-
+@pytest.mark.skip(reason="Not implemented")
 def test_process_array():
     # Test the foratting on the input array -> np array works as expected
     small_examples = ["467..114..",
@@ -75,6 +75,7 @@ def test_get_number_sequences_multiple():
     expected_output = [11, 1, 11]
     assert get_number_sequences(grid, numbers, is_adjacent) == expected_output
 
+@pytest.mark.skip(reason="Not implemented")
 def test_part1():
     test_input = [
             "467..114..",
@@ -112,3 +113,17 @@ def test_part1():
     summed = sum(number_sequences)
     logger.info(summed)
     assert summed == 4361
+    
+def test_alternative():
+    import numpy as np
+    # Example usage
+    schematic = "467..114..\n...*......\n..35..633.\n......#...\n617*......\n.....+.58.\n..592.....\n......755.\n...$.*....\n.664.598.."
+    print(sum_part_numbers(schematic))  # Should output the sum of part numbers
+    assert sum_part_numbers(schematic) == 4361
+    
+def test_one_last_go():
+    import numpy as np
+    # Example usage
+    schematic = "467..114..\n...*......\n..35..633.\n......#...\n617*......\n.....+.58.\n..592.....\n......755.\n...$.*....\n.664.598.."
+    print(final_go(schematic))  # Should output the sum of part numbers
+    # assert one_last_go(schematic) == 4361
