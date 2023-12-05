@@ -3,40 +3,41 @@ import pytest
 from solutions.year_2023.day_05 import *
 
 DATA = [
-        "seeds: 79 14 55 13",
-        "",
-        "seed-to-soil map:",
-        "50 98 2",
-        "52 50 48",
-        "",
-        "soil-to-fertilizer map:",
-        "0 15 37",
-        "37 52 2",
-        "39 0 15",
-        "",
-        "fertilizer-to-water map:",
-        "49 53 8",
-        "0 11 42",
-        "42 0 7",
-        "57 7 4",
-        "",
-        "water-to-light map:",
-        "88 18 7",
-        "18 25 70",
-        "",
-        "light-to-temperature map:",
-        "45 77 23",
-        "81 45 19",
-        "68 64 13",
-        "",
-        "temperature-to-humidity map:",
-        "0 69 1",
-        "1 0 69",
-        "",
-        "humidity-to-location map:",
-        "60 56 37",
-        "56 93 4"
-    ]
+    "seeds: 79 14 55 13",
+    "",
+    "seed-to-soil map:",
+    "50 98 2",
+    "52 50 48",
+    "",
+    "soil-to-fertilizer map:",
+    "0 15 37",
+    "37 52 2",
+    "39 0 15",
+    "",
+    "fertilizer-to-water map:",
+    "49 53 8",
+    "0 11 42",
+    "42 0 7",
+    "57 7 4",
+    "",
+    "water-to-light map:",
+    "88 18 7",
+    "18 25 70",
+    "",
+    "light-to-temperature map:",
+    "45 77 23",
+    "81 45 19",
+    "68 64 13",
+    "",
+    "temperature-to-humidity map:",
+    "0 69 1",
+    "1 0 69",
+    "",
+    "humidity-to-location map:",
+    "60 56 37",
+    "56 93 4",
+]
+
 
 def test_find_element_in_list():
     assert find_element_in_list("a", ["a", "b", "c"]) == 0
@@ -46,9 +47,8 @@ def test_find_element_in_list():
 
 @pytest.mark.skip("Method changed")
 def test_parse_data():
-   
     seeds, result = parse_data(DATA)
-    
+
     assert seeds == {79, 14, 55, 13}
     assert len(result["seed-to-soil map:"]) == 50
     assert len(result["soil-to-fertilizer map:"]) == 54
@@ -57,19 +57,19 @@ def test_parse_data():
     assert len(result["light-to-temperature map:"]) == 55
     assert len(result["temperature-to-humidity map:"]) == 70
     assert len(result["humidity-to-location map:"]) == 41
-    
 
-        
+
 def test_get_location():
     seeds, mapping = parse_data(DATA)
     assert get_location_for_seed(79, mapping) == 82
     assert get_location_for_seed(14, mapping) == 43
     assert get_location_for_seed(55, mapping) == 86
     assert get_location_for_seed(13, mapping) == 35
-    
+
+
 def test_mapping_stages():
     seeds, mapping = parse_data(DATA)
-    
+
     soil = map_func(79, mapping["seed-to-soil map:"])
     assert soil == 81
     fertilizer = map_func(soil, mapping["soil-to-fertilizer map:"])
@@ -84,34 +84,33 @@ def test_mapping_stages():
     assert humidity == 78
     location = map_func(humidity, mapping["humidity-to-location map:"])
     assert location == 82
-    
+
+
 def test_part1():
     assert part1(DATA) == 35
-    
+
 
 def test_part2():
     assert part2(DATA) == 46
-    
+
+
 def test_part2_single_val():
     seeds, mapping = parse_data(DATA)
     # Test the single value
     assert get_location_for_seed(82, mapping=mapping) == 46
-    
+
+
 def test_investigate_part_2():
     seeds, mapping = parse_data(DATA)
-    
+
     tmp = 0
     for seed in range(0, 100):
         loc = get_location_for_seed(seed, mapping=mapping)
         logger.debug(f"Location for seed {seed} is {loc}")
-    
+
 
 def test_map_func():
-    map_dict = {
-        1: (2, 3),
-        4: (5, 6),
-        10: (8, 9)
-    }
+    map_dict = {1: (2, 3), 4: (5, 6), 10: (8, 9)}
 
     assert map_func(0, map_dict) == 0
     # In the first mapper
@@ -129,5 +128,6 @@ def test_map_func():
     assert map_func(10, map_dict) == 8
     # Test the top end - should return the same value
     assert map_func(19, map_dict) == 19
-    
+
+
 #    4917124
