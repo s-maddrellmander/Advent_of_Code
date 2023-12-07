@@ -35,7 +35,10 @@ class Timer:
 
     def __enter__(self):
         self.start_time = time.perf_counter()
-        self._log(f"⭐ {self.name}: Timer started.")
+        if "part" in str.lower(self.name):
+            self._log(f"⭐ {self.name}: Timer started.")
+        else:
+            self._log(f"{self.name}: Timer started.")
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
