@@ -117,6 +117,7 @@ def test_part2():
     input_data = ["32T3K 765", "T55J5 684", "KK677 28", "KTJJT 220", "QQQJA 483"]
     assert part2(input_data) == 5905
 
+
 def test_part2_alt():
     input_data = [
         "2345A 1",
@@ -140,6 +141,7 @@ def test_part2_alt():
         "JJJJ2 41",
     ]
     assert part2(input_data) == 6839
+
 
 def test_specific_part2():
     # input_data = ["AAAAA 61", "AAAJA 43", "2JJJJ 53", "JJJJ2 41", "AAAAJ 59"]
@@ -172,17 +174,34 @@ def test_specific_part2():
     # assert len(set(hands)) == len(hands), f"{len(set(hands))}, {len(hands)}"
     hands_sorted, bids_sorted = sort_hands(hands, bids)
     logger.info(f"sorted_hands: {hands_sorted}, sorted_bids: {bids_sorted}")
-    assert hands_sorted == ('EEEEE000000', 'EEEE1000000', '31111000000', '1EEEE000000', '11113000000', '11111000000', '0DB11B00000', '0CCC1E00000', '0B661600000', '03EEEE00000', '00C3C3C0000', '00B4B410000', '000C3D11000', '000B4C44000', '0000DD78800', '0000043B4D0', '00000345610', '000001456E0', '0000003456E')
+    assert hands_sorted == (
+        "EEEEE000000",
+        "EEEE1000000",
+        "31111000000",
+        "1EEEE000000",
+        "11113000000",
+        "11111000000",
+        "0DB11B00000",
+        "0CCC1E00000",
+        "0B661600000",
+        "03EEEE00000",
+        "00C3C3C0000",
+        "00B4B410000",
+        "000C3D11000",
+        "000B4C44000",
+        "0000DD78800",
+        "0000043B4D0",
+        "00000345610",
+        "000001456E0",
+        "0000003456E",
+    )
     # logger.info(f"sorted_hands: {hands_sorted}")
     total_score = sum(
-        [
-            bids_sorted[i] * (len(bids_sorted) - i)
-            for i in range(0, len(bids_sorted))
-        ]
+        [bids_sorted[i] * (len(bids_sorted) - i) for i in range(0, len(bids_sorted))]
     )
     logger.info(f"sorted_bids: {bids_sorted}")
-    
-    
+
+
 def test_convert_jokers():
     categories = {
         (5,): 0,  # Five of a kind
@@ -198,7 +217,7 @@ def test_convert_jokers():
     hand = Counter(hand)
     logger.info(hand)
     best_hand = convert_jokers(hand, categories)
-    assert best_hand == ({'B': 1, '6': 4})
+    assert best_hand == ({"B": 1, "6": 4})
     hand = "T55JJ"
     score = score_hand(hand, part=2)
     assert score == "0B661100000"

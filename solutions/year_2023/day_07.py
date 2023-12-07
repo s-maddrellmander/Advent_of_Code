@@ -58,7 +58,6 @@ def convert_card_to_base14(card, part: int = 1):
     return mapping[card]
 
 
-
 def compare_base14_numbers(num1, num2):
     # Zero-pad the numbers to ensure correct comparison
     num1 = num1.zfill(7)
@@ -73,8 +72,9 @@ def compare_base14_numbers(num1, num2):
         return 0
 
 
+from itertools import chain, combinations_with_replacement
 
-from itertools import combinations_with_replacement, chain
+
 # Function to evaluate the score of a hand
 def evaluate_score(hand, categories):
     # Determine the category
@@ -84,6 +84,7 @@ def evaluate_score(hand, categories):
     category = categories[counts]
     return category
 
+
 # Function to find the best score with jokers
 def best_score_with_jokers(hand, num_jokers, categories):
     original_score = evaluate_score(hand, categories=categories)
@@ -92,11 +93,11 @@ def best_score_with_jokers(hand, num_jokers, categories):
 
     # Generate all possible hands with jokers
     # import ipdb; ipdb.set_trace()
-    
+
     for j in range(1, num_jokers + 1):
         for jokers_combination in combinations_with_replacement("123456789ABCDE", j):
             # logger.info(f"jokers_combination: {jokers_combination}")
-            
+
             new_hand = dict(hand)
             if "1" in new_hand:
                 new_hand["1"] -= len(jokers_combination)
@@ -105,7 +106,7 @@ def best_score_with_jokers(hand, num_jokers, categories):
                     new_hand[x] += 1
                 else:
                     new_hand[x] = 1
-            
+
             new_score = evaluate_score(new_hand, categories)
             # logger.info(f"new_hand: {new_hand}, new_score: {new_score}")
 
@@ -115,10 +116,11 @@ def best_score_with_jokers(hand, num_jokers, categories):
                 # import ipdb; ipdb.set_trace()
     # best_hand = tuple(filter(lambda x: x != 0, best_hand.values()))
     if "1" in best_hand:
-        if best_hand["1"] == 0: 
+        if best_hand["1"] == 0:
             best_hand.pop("1")
     return best_hand, best_score
-    
+
+
 def convert_jokers(hand_counter: Counter, categories: dict) -> Counter:
     # Convert the jokers
     num_jokers = hand_counter["1"]
@@ -128,7 +130,8 @@ def convert_jokers(hand_counter: Counter, categories: dict) -> Counter:
     # import ipdb; ipdb.set_trace()
     return best_hand
 
-def score_hand(hand, part: int =1):
+
+def score_hand(hand, part: int = 1):
     # Define the categories - return the index to update
     categories = {
         (5,): 0,  # Five of a kind
@@ -185,7 +188,12 @@ def part1(input_data: Optional[List[str]]) -> Union[str, int]:
 
     with Timer("Part 1"):
         hands, bids = parse_input(input_data)
-        hands = [score_hand(hand,) for hand in hands]
+        hands = [
+            score_hand(
+                hand,
+            )
+            for hand in hands
+        ]
         # assert len(set(hands)) == len(hands), f"{len(set(hands))}, {len(hands)}"
         hands_sorted, bids_sorted = sort_hands(hands, bids)
         # logger.info(f"sorted_hands: {hands_sorted}")
