@@ -1,10 +1,12 @@
 # solutions/year_2023/day_08.py
-from itertools import cycle
-from math import lcm
 from typing import Dict, List, Optional, Tuple, Union
 
 from logger_config import logger
 from utils import Timer
+
+from itertools import cycle
+from math import lcm
+
 
 
 def parse_input(input_data: List[str]) -> Tuple[Dict[str, Dict[str, str]], str]:
@@ -31,9 +33,7 @@ def parse_input(input_data: List[str]) -> Tuple[Dict[str, Dict[str, str]], str]:
     return graph, instructions
 
 
-def get_all_start_and_end_nodes(
-    graph: Dict[str, Dict[str, str]]
-) -> Tuple[List[str], List[str]]:
+def get_all_start_and_end_nodes(graph: Dict[str, Dict[str, str]]) -> Tuple[List[str], List[str]]:
     """
     Get all the start and end nodes in the graph.
 
@@ -53,7 +53,6 @@ def get_all_start_and_end_nodes(
             end_nodes.append(node)
     return start_nodes, end_nodes
 
-
 def traverse_graph(graph: Dict[str, Dict[str, str]], instructions: str) -> List[str]:
     """
     Traverse the graph according to the instructions.
@@ -70,7 +69,7 @@ def traverse_graph(graph: Dict[str, Dict[str, str]], instructions: str) -> List[
     current_node = "AAA"
     instructions_cycle = instructions * 100
     # import ipdb; ipdb.set_trace()
-
+    
     for direction in instructions_cycle:
         # TODO: infinite loop of instructions
         if direction == "R":
@@ -85,17 +84,11 @@ def traverse_graph(graph: Dict[str, Dict[str, str]], instructions: str) -> List[
 
     return path
 
-
-def multiple_traversal(
-    graph: Dict[str, Dict[str, str]],
-    starts: List[str],
-    ends: List[str],
-    instructions: str,
-) -> int:
+def multiple_traversal(graph: Dict[str, Dict[str, str]], starts: List[str], ends: List[str], instructions: str) -> int:
     """
     Traverse the graph in parallel with multiple starting and ending points.
     Return the number of steps taken until all end points are reached and the same time
-
+    
     Do this by finding the lowest common multipier for each path.
     """
     instructions_cycle = instructions * 100000
@@ -108,9 +101,7 @@ def multiple_traversal(
     for direction in instructions_cycle:
         counter += 1
         if counter % 100000 == 0:
-            logger.info(
-                f"Step: {counter} Current nodes: {current_nodes} steps taken: {steps}"
-            )
+            logger.info(f"Step: {counter} Current nodes: {current_nodes} steps taken: {steps}")
         for i, node in enumerate(current_nodes):
             if steps[i] == 0:
                 if direction == "R":
@@ -119,16 +110,19 @@ def multiple_traversal(
                     current_nodes[i] = graph[node]["left"]
                 else:
                     raise ValueError("Invalid direction")
-
+                
                 if current_nodes[i][-1] == "Z":
                     steps[i] = counter
                     logger.info(f"Node {i} reached end in {counter} steps")
-        if all(x > 0 for x in steps):
+        if all(x>0 for x in steps):
             break
-
+        
     logger.info(f"Steps: {steps}")
-    # This is a really important lesson - loops are super expensive, but cycles are predictable
+    # This is a really important lesson - loops are super expensive, but cycles are predictable and fast
     return lcm(*steps)
+            
+    
+   
 
 
 def part1(input_data: Optional[List[str]]) -> Union[str, int]:
@@ -147,7 +141,7 @@ def part1(input_data: Optional[List[str]]) -> Union[str, int]:
     with Timer("Part 1"):
         # Your solution for part 1 goes here
         graph, instructions = parse_input(input_data)
-        path = traverse_graph(graph, instructions)
+        path = traverse_graph(graph, instructions)  
         steps = len(path)
         return steps
 
