@@ -45,20 +45,6 @@ def test_find_element_in_list():
     assert find_element_in_list("d", ["a", "b", "c"]) == -1
 
 
-@pytest.mark.skip("Method changed")
-def test_parse_data():
-    seeds, result = parse_data(DATA)
-
-    assert seeds == {79, 14, 55, 13}
-    assert len(result["seed-to-soil map:"]) == 50
-    assert len(result["soil-to-fertilizer map:"]) == 54
-    assert len(result["fertilizer-to-water map:"]) == 61
-    assert len(result["water-to-light map:"]) == 77
-    assert len(result["light-to-temperature map:"]) == 55
-    assert len(result["temperature-to-humidity map:"]) == 70
-    assert len(result["humidity-to-location map:"]) == 41
-
-
 def test_get_location():
     seeds, mapping = parse_data(DATA)
     assert get_location_for_seed(79, mapping) == 82
