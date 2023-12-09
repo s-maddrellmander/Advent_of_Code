@@ -1,35 +1,38 @@
 import importlib
-import sys
-from unittest.mock import patch
-
-import pytest
+import logging
 
 from data_parser import load_file
 from run import main, run_solution
 
 
-@pytest.mark.skip(reason="Not implemented yet.")
-def test_main_with_specific_part(capsys, monkeypatch):
-    monkeypatch.setattr(sys, "argv", ["run.py", "1", "1"])
+def test_main_with_specific_part(caplog, monkeypatch):
+    # Set the log level you want to capture
+    caplog.set_level(logging.INFO)
+
+    # Use monkeypatch to simulate command line arguments
+    monkeypatch.setattr("sys.argv", ["run.py", "0", "1"])
+
+    # Run the function which will produce log output
     main()
-    captured = capsys.readouterr()
-    assert "⭐ Part 1: Timer started." in captured.out
-    assert "⭐ Part 2: Timer started." not in captured.out
+
+    # Use caplog to assert log messages
+    assert "⭐ Part 1: Timer started." in caplog.text
+    assert "⭐ Part 2: Timer started." not in caplog.text
 
 
-@pytest.mark.skip(reason="Not implemented yet.")
-def test_run_solution_with_part_1(capsys):
+def test_run_solution_with_part_1(caplog):
+    # Set the log level you want to capture
+    caplog.set_level(logging.INFO)
     module = importlib.import_module("solutions.year_2023.day_01")
     data = load_file("inputs/year_2023/day_01.txt")
     run_solution(module, 1, data)
-    captured = capsys.readouterr()
-    assert "⭐ Part 1: Timer started." in captured.out
+    captured = caplog.text
+    assert "⭐ Part 1: Timer started." in captured
 
 
-@pytest.mark.skip(reason="Not implemented yet.")
-def test_run_solution_with_part_2(capsys):
+def test_run_solution_with_part_2(caplog):
     module = importlib.import_module("solutions.year_2023.day_01")
     data = load_file("inputs/year_2023/day_01.txt")
     run_solution(module, 2, data)
-    captured = capsys.readouterr()
-    assert "⭐ Part 2: Timer started." in captured.out
+    captured = caplog.text
+    assert "⭐ Part 2: Timer started." in captured
