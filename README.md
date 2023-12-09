@@ -1,5 +1,5 @@
 # Advent_of_Code ![Advent of Code Logo](logo.png)
-[![Python application](https://github.com/s-maddrellmander/Advent_of_Code/actions/workflows/python-app.yml/badge.svg)](https://github.com/s-maddrellmander/Advent_of_Code/actions/workflows/python-app.yml)
+[![Python application](https://github.com/s-maddrellmander/Advent_of_Code/actions/workflows/python-app.yml/badge.svg)](https://github.com/s-maddrellmander/Advent_of_Code/actions/workflows/python-app.yml)[![codecov](https://codecov.io/gh/s-maddrellmander/Advent_of_Code/graph/badge.svg?token=CJH8YZW2PO)](https://codecov.io/gh/s-maddrellmander/Advent_of_Code)
 
 *Parent repository for Advent of Code - a personal sandbox for development and learning.*
 
