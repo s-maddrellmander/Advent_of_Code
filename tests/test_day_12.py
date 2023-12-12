@@ -52,3 +52,16 @@ def test_valid_combination():
     combination = ".##..#...##.."
     expected_groups = [2, 1, 3]
     assert valid_combination(combination, expected_groups) == False
+
+
+@pytest.mark.skip(reason="Test runs too slowly")
+def test_part2_steps():
+    input_data = [
+        "???.### 1,1,3",
+        ".??..??...?##. 1,1,3",
+        "?#?#?#?#?#?#?#? 1,3,1,6",
+        "????.#...#... 4,1,1",
+        "????.######..#####. 1,6,5",
+        "?###???????? 3,2,1",
+    ]
+    assert part2(input_data=input_data) == 525152
