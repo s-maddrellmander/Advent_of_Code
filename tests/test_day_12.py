@@ -12,7 +12,7 @@ def test_count_example_without_unknown():
 def test_generate_combinations():
     springs = ".??..??...?##. 1,1,3"
     results = []
-    generate_combinations(springs, 0, "", results, [1, 1, 3], memo={})
+    generate_combinations(springs, 0, "", results, [1, 1, 3])
     assert len(results) == 4
 
 

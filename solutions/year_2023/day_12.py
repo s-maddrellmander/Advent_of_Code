@@ -8,6 +8,8 @@ from tqdm import tqdm
 from logger_config import logger
 from utils import Timer
 
+memo = {}
+
 
 def parse_input(input_data: List[str]) -> Tuple[str, List[int]]:
     lines = [line.strip() for line in input_data]
@@ -66,9 +68,7 @@ def count_damaged_springs(springs, pattern):
     # Momoisation
     memo = {}
     # Generate all possible combinations
-    generate_combinations(
-        springs, 0, "", combinations, expected_groups=pattern, memo=memo
-    )
+    generate_combinations(springs, 0, "", combinations, expected_groups=pattern)
 
     # Initialize a list to store valid combinations
     valid_combinations = []
@@ -84,11 +84,13 @@ def count_damaged_springs(springs, pattern):
 
 
 # @lru_cache(maxsize=None)  # maxsize=None means the cache can grow without bound
-def generate_combinations(springs, index, current, results, expected_groups, memo):
-    # Check if the current state is already computed
-    if (index, current) in memo:
-        for comb in memo[(index, current)]:
-            results.append(current + comb)
+def generate_combinations(springs, index, current, results, expected_groups):
+    # Using a tuple for memoization key (more efficient than string concatenation)
+    memo_key = (index, tuple(current))
+
+    # Check if this state is already computed
+    if memo_key in memo:
+        results.extend(memo[memo_key])
         return
 
     if index == len(springs):
@@ -100,11 +102,19 @@ def generate_combinations(springs, index, current, results, expected_groups, mem
     if springs[index] == "?":
         # Consider the spring as operational and recurse
         generate_combinations(
-            springs, index + 1, current + ".", results, expected_groups, memo=memo
+            springs,
+            index + 1,
+            current + ".",
+            results,
+            expected_groups,
         )
         # Consider the spring as damaged and recurse
         generate_combinations(
-            springs, index + 1, current + "#", results, expected_groups, memo=memo
+            springs,
+            index + 1,
+            current + "#",
+            results,
+            expected_groups,
         )
     else:
         # If the spring at index is known, add it to the current combination and recurse
@@ -114,8 +124,9 @@ def generate_combinations(springs, index, current, results, expected_groups, mem
             current + springs[index],
             results,
             expected_groups,
-            memo=memo,
         )
+    # Store the result in the memo dictionary
+    memo[(index, current)] = results
 
 
 def part1(input_data: Optional[List[str]]) -> Union[str, int]:
@@ -160,8 +171,8 @@ def part2(input_data: Optional[List[str]]) -> Union[str, int]:
         total = 0
         for row in tqdm(input_data):
             springs, pattern = row
-            springs = [springs + "?"] * 5
-            pattern = [pattern] * 5
+            springs = [springs + "?"] * 2
+            pattern = [pattern] * 2
             # # Flatten the springs list
             springs = "".join(x for x in [s for sublist in springs for s in sublist])
 
