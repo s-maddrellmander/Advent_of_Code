@@ -6,7 +6,7 @@ import colorlog
 logger = colorlog.getLogger()
 
 # Set the level of logger
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 # Create a handler
 handler = colorlog.StreamHandler()
