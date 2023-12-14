@@ -115,7 +115,7 @@ def part2(input_data: Optional[List[str]]) -> Union[str, int]:
                 grid_array = roll_fast_with_obstacles(grid_array)
                 grid_array = np.rot90(grid_array, -1)
             score = score_grid(grid_array)
-            logger.debug(f"Cycle {cycle}: {score} ")
+            # logger.debug(f"Cycle {cycle}: {score} ")
             # Do this at the end
             grid_hash = hash(grid_array.tostring())
             if grid_hash in seen_states:
@@ -136,7 +136,6 @@ def part2(input_data: Optional[List[str]]) -> Union[str, int]:
                 grid_array = roll_fast_with_obstacles(grid_array)
                 grid_array = np.rot90(grid_array, -1)
             score = score_grid(grid_array)
-            logger.debug(f"Cycle {extra}: {score}")
 
         score = score_grid(grid_array)
         return score
