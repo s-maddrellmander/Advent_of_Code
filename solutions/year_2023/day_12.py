@@ -1,17 +1,17 @@
 # solutions/year_2023/day_12.py
 import re
 from functools import lru_cache
-from typing import List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from tqdm import tqdm
 
 from logger_config import logger
 from utils import Timer
 
-memo = {}
+memo: Dict = {}
 
 
-def parse_input(input_data: List[str]) -> Tuple[str, List[int]]:
+def parse_input(input_data: List[str]) -> List[Tuple[str, List[int]]]:
     lines = [line.strip() for line in input_data]
     output = []
     for line in lines:

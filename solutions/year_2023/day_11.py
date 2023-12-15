@@ -68,12 +68,12 @@ def all_combinations(
     return all_pairs
 
 
-def grid_to_coords(grid: List[str]) -> List[tuple]:
+def grid_to_coords(grid: np.ndarray) -> List[Tuple[int, int]]:
     """
     Convert a grid to a list of coordinates.
 
     Args:
-        grid (List[str]): The grid to convert.
+        grid (np.ndarray): The grid to convert.
 
     Returns:
         List[tuple]: The coordinates of the grid.
@@ -83,10 +83,12 @@ def grid_to_coords(grid: List[str]) -> List[tuple]:
         for x, char in enumerate(line):
             if char == "#":
                 coords.append((y, x))
-    return coords
+    return coords  # type: ignore
 
 
-def manhattan_distances(coords: List[Tuple[int, int]]) -> List[int]:
+def manhattan_distances(
+    coords: List[Tuple[Tuple[int, int], Tuple[int, int]]]
+) -> List[int]:
     """
     Calculate the Manhattan distance between all pairs of coordinates.
 

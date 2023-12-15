@@ -1,5 +1,5 @@
 # solutions/year_2023/day_14.py
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 from tqdm import tqdm
@@ -103,7 +103,7 @@ def part2(input_data: Optional[List[str]]) -> Union[str, int]:
         raise ValueError("Input data is None or empty")
 
     with Timer("Part 2"):
-        seen_states = dict()
+        seen_states: Dict = dict()
         grid = [list(row) for row in input_data]
         grid_array = np.array(grid)
         # Rotate the grid 180 degrees so N at the bottom
@@ -117,7 +117,7 @@ def part2(input_data: Optional[List[str]]) -> Union[str, int]:
             score = score_grid(grid_array)
             # logger.debug(f"Cycle {cycle}: {score} ")
             # Do this at the end
-            grid_hash = hash(grid_array.tostring())
+            grid_hash = hash(grid_array.tostring())  # type: ignore
             if grid_hash in seen_states:
                 # We've seen this state before, so we can break
                 logger.debug(f"Cycle {cycle}: {score} ")
