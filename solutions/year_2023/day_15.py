@@ -1,4 +1,5 @@
 # solutions/year_2023/day_15.py
+from collections import defaultdict
 from typing import Dict, List, Optional, Union
 
 from logger_config import logger
@@ -98,40 +99,23 @@ def part2(input_data: Optional[List[str]]) -> Union[str, int]:
     if not input_data:
         raise ValueError("Input data is None or empty")
 
-    # So this is basically just making a hash map now
-    with Timer("Part 2"):
-        # Slightly verbose but okay to cover all boxes we expect to have
-        boxes: Dict[int, Node] = {_: None for _ in range(256)}  # type: ignore
+    with Timer("Part 2 Dicts only:"):
+        boxes = defaultdict(dict)  # type: Dict[int, Dict[str, int]]
         steps = parse_input(input_data[0])
-        current = 0
         for step in steps:
             if "=" in step:
                 key, value = step.split("=")
                 hash = 0
                 for char in key:
                     hash = hash_function(char, current_value=hash)
-                boxes[hash] = add_to_linked_list(boxes[hash], name=key, value=value)
-                logger.debug(f"Adding {key} with value {value} and hash {hash}")
+                boxes[hash][key] = int(value)
 
             elif "-" in step:
                 key, _ = step.split("-")
                 hash = 0
                 for char in key:
                     hash = hash_function(char, current_value=hash)
-                boxes[hash] = remove_from_linked_list(boxes[hash], name=key)
-                logger.debug(f"Removing {key} and hash {hash}")
-
-        # Score the final boxes
-        score = 0
-        for box in boxes:
-            if boxes[box] is not None:
-                i = 1
-                while boxes[box] is not None:
-                    value = boxes[box].value
-                    score += (1 + int(box)) * (i) * int(value)
-                    logger.debug(f"Box {box} has value {value}")
-
-                    boxes[box] = boxes[box].next
-                    i += 1
-
-        return score
+                boxes[hash].pop(key, None)
+    return sum(
+        (i + 1) * (j + 1) * l for i in boxes for j, l in enumerate(boxes[i].values())
+    )

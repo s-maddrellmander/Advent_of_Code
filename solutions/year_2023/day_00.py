@@ -1,5 +1,5 @@
 # solutions/year_2023/day_00.py
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from logger_config import logger
 from utils import Timer
