@@ -76,8 +76,8 @@ def part2(input_data: Optional[List[str]]) -> Union[str, int]:
         perimiter = 0
         x, y = 0, 0
         for _, _, hex_dir in instructions:
-            hex_dir, length = int(hex_dir[-2]), int(hex_dir[2:-2], 16)
-            dy, dx = hex_dirs[hex_dir]
+            hex_dir, length = hex_dir[-2], int(hex_dir[2:-2], 16)
+            dy, dx = hex_dirs[int(hex_dir)]
             dx, dy = dx * length, dy * length
             x, y = x + dx, y + dy
             area += stokes_integral(x, dy)

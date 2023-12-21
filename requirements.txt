@@ -7,3 +7,5 @@ colorlog
 pytest-mock
 mocker
 pytest-cov
+networkx
+matplotlib
