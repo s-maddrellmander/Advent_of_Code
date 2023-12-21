@@ -19,7 +19,7 @@ SIMPLE_GRID = [
 
 def test_parse_input():
     grid = parse_input(SIMPLE_GRID)
-    assert grid[complex(5, 5)].value == "S"
+    assert grid[complex(5, 5)].value == "O"
     assert grid[complex(5, 5)].state == True
     assert grid[complex(6, 5)].value == "#"
     assert grid[complex(0, 0)].value == "."
