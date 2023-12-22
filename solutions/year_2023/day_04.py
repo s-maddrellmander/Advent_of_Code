@@ -12,7 +12,7 @@ def parse_cards_to_dictionaries(data: List[str]) -> dict:
             parts = line.split(":")
             card_num = parts[0].strip()
             # reaplce card num with just the number
-            card_num = int(card_num.replace("Card ", ""))
+            card_num = int(card_num.replace("Card ", ""))  # type: ignore
             numbers = parts[1].split("|")
 
             left_numbers = set(map(int, numbers[0].strip().split()))
