@@ -9,3 +9,4 @@ mocker
 pytest-cov
 networkx
 matplotlib
+sympy
