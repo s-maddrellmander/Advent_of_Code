@@ -184,7 +184,6 @@ def part1(input_data: Optional[List[str]], real=True) -> Union[str, int]:
 
         if real:
             count, clus = bfs_count_nodes(adj_matrix, node_names)
-            assert count == 1496 - 6
             assert len(clus) == 2
         else:
             adj, clus, combin = cut_three_edges(adj_matrix, node_names)
