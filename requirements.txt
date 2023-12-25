@@ -10,3 +10,4 @@ pytest-cov
 networkx
 matplotlib
 sympy
+scipy
