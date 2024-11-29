@@ -4,6 +4,7 @@ import sys
 from data_parser import load_file
 from logger_config import logger
 
+YEAR = "2024"
 
 def run_solution(day, part, input_data):
     try:
@@ -27,14 +28,14 @@ def main():
 
     # Read the corresponding input file
     try:
-        data = load_file(f"inputs/year_2023/{day_module_name}.txt")
+        data = load_file(f"inputs/year_{YEAR}/{day_module_name}.txt")
     except FileNotFoundError:
         logger.warning(f"Input file for {day_module_name} not found.")
         return
 
     # Dynamically import the day module from the correct year package
     try:
-        module = importlib.import_module(f"solutions.year_2023.{day_module_name}")
+        module = importlib.import_module(f"solutions.year_{YEAR}.{day_module_name}")
     except ModuleNotFoundError as e:
         logger.warning(f"Module for {day_module_name} not found.")
         return e
