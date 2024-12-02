@@ -6,6 +6,7 @@ from logger_config import logger
 
 YEAR = "2024"
 
+
 def run_solution(day, part, input_data):
     try:
         solution = getattr(day, f"part{part}")(input_data)

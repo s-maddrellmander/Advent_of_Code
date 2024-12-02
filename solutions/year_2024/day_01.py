@@ -4,13 +4,13 @@ from typing import Dict, List, Optional, Tuple, Union
 from logger_config import logger
 from utils import Timer
 
+
 def parse_input(input_data):
     pairs = []
     for line in input_data:
         x = line.split("   ")
         pairs.append((int(x[0]), int(x[1])))
     return pairs
-
 
 
 def part1(input_data: Optional[List[str]]) -> Union[str, int]:
@@ -34,6 +34,7 @@ def part1(input_data: Optional[List[str]]) -> Union[str, int]:
         deltas = [abs(x2 - x1) for x1, x2 in zip(list1, list2)]
 
         return sum(deltas)
+
 
 def part2(input_data: Optional[List[str]]) -> Union[str, int]:
     """
