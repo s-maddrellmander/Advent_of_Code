@@ -1,17 +1,19 @@
-from solutions.year_2024.day_04 import *
 import pytest
+
+from solutions.year_2024.day_04 import *
 
 
 @pytest.fixture
 def small_data():
     dat = [
-            "..X...",
-            ".SAMX.",
-            ".A..A.",
-            "XMAS.S",
-            ".X....",
-           ]
+        "..X...",
+        ".SAMX.",
+        ".A..A.",
+        "XMAS.S",
+        ".X....",
+    ]
     return dat
+
 
 def test_find_x(small_data):
     coords = find_x_coord(small_data)
@@ -52,11 +54,11 @@ def test_crossed_mas():
     ]
     _data = full_map(data)
     coords = find_x_coord(data, "A")
-    
+
     assert len(coords) == 9
     assert complex(1, 2) in coords
-    
+
     score = 0
     for coord in coords:
-        score += find_crossed_mas(coord,_data)
+        score += find_crossed_mas(coord, _data)
     assert score == 9

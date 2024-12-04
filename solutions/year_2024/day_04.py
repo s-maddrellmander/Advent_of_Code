@@ -13,6 +13,7 @@ Simplest approach:
 
 """
 
+
 def find_x_coord(array, query="X"):
     coords = []
     for i, row in enumerate(array):
@@ -21,6 +22,7 @@ def find_x_coord(array, query="X"):
                 coords.append(complex(i, j))
     return coords
 
+
 def full_map(input_data):
     full_map = {}
     for row in range(len(input_data)):
@@ -28,47 +30,96 @@ def full_map(input_data):
             full_map[complex(row, col)] = input_data[row][col]
     return full_map
 
+
 def find_xmas(coord, M):
     score = 0
 
     # Check horizontal right
-    if (coord + (1 + 0j) in M and coord + (2 + 0j) in M and coord + (3 + 0j) in M and
-        M[coord + (1 + 0j)] == "M" and M[coord + (2 + 0j)] == "A" and M[coord + (3 + 0j)] == "S"):
+    if (
+        coord + (1 + 0j) in M
+        and coord + (2 + 0j) in M
+        and coord + (3 + 0j) in M
+        and M[coord + (1 + 0j)] == "M"
+        and M[coord + (2 + 0j)] == "A"
+        and M[coord + (3 + 0j)] == "S"
+    ):
         score += 1
 
     # Diagonal down-right
-    if (coord + (1 + 1j) in M and coord + (2 + 2j) in M and coord + (3 + 3j) in M and
-        M[coord + (1 + 1j)] == "M" and M[coord + (2 + 2j)] == "A" and M[coord + (3 + 3j)] == "S"):
+    if (
+        coord + (1 + 1j) in M
+        and coord + (2 + 2j) in M
+        and coord + (3 + 3j) in M
+        and M[coord + (1 + 1j)] == "M"
+        and M[coord + (2 + 2j)] == "A"
+        and M[coord + (3 + 3j)] == "S"
+    ):
         score += 1
 
     # Vertical down
-    if (coord + (0 + 1j) in M and coord + (0 + 2j) in M and coord + (0 + 3j) in M and
-        M[coord + (0 + 1j)] == "M" and M[coord + (0 + 2j)] == "A" and M[coord + (0 + 3j)] == "S"):
+    if (
+        coord + (0 + 1j) in M
+        and coord + (0 + 2j) in M
+        and coord + (0 + 3j) in M
+        and M[coord + (0 + 1j)] == "M"
+        and M[coord + (0 + 2j)] == "A"
+        and M[coord + (0 + 3j)] == "S"
+    ):
         score += 1
 
     # Diagonal up-left
-    if (coord + (-1 + -1j) in M and coord + (-2 + -2j) in M and coord + (-3 + -3j) in M and
-        M[coord + (-1 + -1j)] == "M" and M[coord + (-2 + -2j)] == "A" and M[coord + (-3 + -3j)] == "S"):
+    if (
+        coord + (-1 + -1j) in M
+        and coord + (-2 + -2j) in M
+        and coord + (-3 + -3j) in M
+        and M[coord + (-1 + -1j)] == "M"
+        and M[coord + (-2 + -2j)] == "A"
+        and M[coord + (-3 + -3j)] == "S"
+    ):
         score += 1
 
     # Horizontal left
-    if (coord + (-1 + 0j) in M and coord + (-2 + 0j) in M and coord + (-3 + 0j) in M and
-        M[coord + (-1 + 0j)] == "M" and M[coord + (-2 + 0j)] == "A" and M[coord + (-3 + 0j)] == "S"):
+    if (
+        coord + (-1 + 0j) in M
+        and coord + (-2 + 0j) in M
+        and coord + (-3 + 0j) in M
+        and M[coord + (-1 + 0j)] == "M"
+        and M[coord + (-2 + 0j)] == "A"
+        and M[coord + (-3 + 0j)] == "S"
+    ):
         score += 1
 
     # Diagonal up-right
-    if (coord + (-1 + 1j) in M and coord + (-2 + 2j) in M and coord + (-3 + 3j) in M and
-        M[coord + (-1 + 1j)] == "M" and M[coord + (-2 + 2j)] == "A" and M[coord + (-3 + 3j)] == "S"):
+    if (
+        coord + (-1 + 1j) in M
+        and coord + (-2 + 2j) in M
+        and coord + (-3 + 3j) in M
+        and M[coord + (-1 + 1j)] == "M"
+        and M[coord + (-2 + 2j)] == "A"
+        and M[coord + (-3 + 3j)] == "S"
+    ):
         score += 1
 
     # Vertical up
-    if (coord + (0 + -1j) in M and coord + (0 + -2j) in M and coord + (0 + -3j) in M and
-        M[coord + (0 + -1j)] == "M" and M[coord + (0 + -2j)] == "A" and M[coord + (0 + -3j)] == "S"):
+    if (
+        coord + (0 + -1j) in M
+        and coord + (0 + -2j) in M
+        and coord + (0 + -3j) in M
+        and M[coord + (0 + -1j)] == "M"
+        and M[coord + (0 + -2j)] == "A"
+        and M[coord + (0 + -3j)] == "S"
+    ):
         score += 1
 
     # Diagonal down-left
-    if (coord + (1 + -1j) in M and coord + (2 + -2j) in M and coord + (3 + -3j) in M and
-        M[coord + (1 + -1j)] == "M" and M[coord + (2 + -2j)] == "A" and M[coord + (3 + -3j)] == "S"):
+    if (
+        coord + (1 + -1j) in M
+        and coord + (2 + -2j) in M
+        and coord + (3 + -3j) in M
+        and M[coord + (1 + -1j)] == "M"
+        and M[coord + (2 + -2j)] == "A"
+        and M[coord + (3 + -3j)] == "S"
+    ):
         score += 1
 
     return score
@@ -79,18 +130,22 @@ def find_crossed_mas(coord, M):
         ((1 + 1j), (-1 - 1j)),
         ((-1 + 1j), (1 - 1j)),
         ((1 - 1j), (-1 + 1j)),
-        ((-1 - 1j), (1 + 1j))
+        ((-1 - 1j), (1 + 1j)),
     ]
-    
+
     sols = 0
     for d1, d2 in diagonals:
-        if (coord + d1 in M and coord + d2 in M and
-                M[coord + d1] == "M" and M[coord + d2] == "S"):
+        if (
+            coord + d1 in M
+            and coord + d2 in M
+            and M[coord + d1] == "M"
+            and M[coord + d2] == "S"
+        ):
             sols += 1
     if sols == 2:
         return True
     return False
-        
+
 
 def part1(input_data: Optional[List[str]]) -> Union[str, int]:
     """
@@ -114,6 +169,7 @@ def part1(input_data: Optional[List[str]]) -> Union[str, int]:
             score += find_xmas(coord, data)
         return score
 
+
 def part2(input_data: Optional[List[str]]) -> Union[str, int]:
     """
     Solve part 2 of the day's challenge.
@@ -128,7 +184,6 @@ def part2(input_data: Optional[List[str]]) -> Union[str, int]:
         raise ValueError("Input data is None or empty")
 
     with Timer("Part 2"):
-        
         data = full_map(input_data)
         coords = find_x_coord(input_data, "A")
 
@@ -136,4 +191,3 @@ def part2(input_data: Optional[List[str]]) -> Union[str, int]:
         for coord in coords:
             score += find_crossed_mas(coord, data)
         return score
-        
