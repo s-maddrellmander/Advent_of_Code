@@ -19,3 +19,5 @@ def test_part1(data):
 def test_part2():
     data2 = ["xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"]
     assert part2(data2) == 48
+
+
