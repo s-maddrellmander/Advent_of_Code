@@ -1,11 +1,10 @@
 # solutions/year_2024/day_00.py
-from typing import Dict, List, Optional, Tuple, Union
 
 from logger_config import logger
 from utils import Timer
 
 
-def part1(input_data: Optional[List[str]]) -> Union[str, int]:
+def part1(input_data: list[str] | None) -> str | int:
     """
     Solve part 1 of the day's challenge.
 
@@ -23,7 +22,7 @@ def part1(input_data: Optional[List[str]]) -> Union[str, int]:
         return "Part 1 solution not implemented."
 
 
-def part2(input_data: Optional[List[str]]) -> Union[str, int]:
+def part2(input_data: list[str] | None) -> str | int:
     """
     Solve part 2 of the day's challenge.
 
