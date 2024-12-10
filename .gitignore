@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+inputs/year_2023/
+inputs/year_2024/
+
 # C extensions
 *.so
 
