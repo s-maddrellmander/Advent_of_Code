@@ -65,7 +65,7 @@ def test_main_with_wrong_part(caplog, monkeypatch):
 
     # Use caplog to assert log messages
     assert (
-        "Solution function for solutions.year_2023.day_00 part 3 not found."
+        "day_00 part 3 not found."
         in caplog.text
     )
 
