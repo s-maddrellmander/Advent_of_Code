@@ -7,6 +7,7 @@ def unpack_input(input_data: list[str]) -> list[any]:
     input_data = input_data[0]
     # Pairs of [file size, freespace] throughthe input
     output = []
+    spaces = dict()
     file_identifier = 0
     for idx in range(len(input_data)):
         if idx % 2 == 0:
@@ -14,9 +15,11 @@ def unpack_input(input_data: list[str]) -> list[any]:
             output.extend([idx//2] * size)
         else:
             space = int(input_data[idx])
+            spaces[len(output)] = space
             output.extend([None] * space)
+            
         
-    return output
+    return output, spaces
 
 
 def compress(memory_buffer: list[any]) -> list[any]:
@@ -41,8 +44,55 @@ def compute_checksum(memory_buffer: list[any]) -> int:
             checksum += memory_buffer[idx] * idx # Zero indexed
     return checksum
 
-def compress_whole_files(memory_buffer: list[any]) -> list[any]:
-    pass
+
+
+def compress_whole_files(memory_buffer: list[any], spaces: dict, num_files: int) -> list[any]:
+    # Here we nee to find the whole blocks of memory where the entire file can be moved to
+
+    left = 0
+    # print(memory_buffer, len(memory_buffer))
+    right = len(memory_buffer) - 1
+    for _ in range(num_files):
+        left = -1
+        
+        # Start by finding the last file - and it's size
+        while memory_buffer[right] is None:
+            right -= 1
+        last_file = memory_buffer[right]
+        last_file_size = 0
+        while memory_buffer[right] == last_file:
+            last_file_size += 1
+            right -= 1
+
+        # Then we find the leftmost space large enough to hold the file
+        # print(spaces)
+        keys = sorted(list(spaces.keys()))
+        # print(keys)
+        for space in keys:
+            # print(space, spaces[space], last_file_size)
+            if space < right:
+                if spaces[space] >= last_file_size:
+                    left = space
+                    break
+
+        if left > 0:
+            prev_len = len(memory_buffer)
+            # print(left, right, last_file_size)
+            memory_buffer[left:left+last_file_size] = [last_file] * last_file_size
+            assert len(memory_buffer) == prev_len
+            memory_buffer[right+1:right+1+last_file_size] = [None] * last_file_size
+            assert len(memory_buffer) == prev_len
+            # Update the spaces dictionary
+            # print(left, right, space)
+            if spaces[left] > last_file_size:
+                # print(left, last_file_size)
+                spaces[left+last_file_size] = spaces.pop(left) - last_file_size
+            else:
+                spaces.pop(left)
+            
+        # print(memory_buffer, len(memory_buffer), _)
+    return memory_buffer
+
 
 
 def part1(input_data: list[str] | None) -> str | int:
@@ -65,7 +115,7 @@ def part1(input_data: list[str] | None) -> str | int:
         raise ValueError("Input data is None or empty")
 
     with Timer("Part 1"):
-        memory_buffer = unpack_input(input_data)
+        memory_buffer, _ = unpack_input(input_data)
         defrag = compress(memory_buffer)
         checksum = compute_checksum(defrag)
         return checksum
@@ -85,5 +135,8 @@ def part2(input_data: list[str] | None) -> str | int:
         raise ValueError("Input data is None or empty")
 
     with Timer("Part 2"):
-        # Your solution for part 2 goes here
-        return "Part 2 solution not implemented."
+        memory_buffer, spaces = unpack_input(input_data)
+        num_files = len(set(memory_buffer)) - 1
+        defrag = compress_whole_files(memory_buffer, spaces, num_files=num_files)
+        checksum = compute_checksum(defrag)
+        return checksum
