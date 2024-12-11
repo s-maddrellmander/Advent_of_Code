@@ -10,90 +10,74 @@ def create_map(input_data: List[str]) -> Dict[str, str]:
     start = None
     for i in range(len(input_data)):
         for j in range(len(input_data[i])):
-            carte[(i, j)] = {"type": input_data[i][j], "visited": False, "direction": None}
+            carte[(i, j)] = {"type": input_data[i][j], "visited": False, "direction": []}
             if input_data[i][j] == "^":
                 start = (i, j)
     return carte, start
 
 
-def move_guard(carte: Dict[str, str], position: Tuple[int, int], direction: str):
-    if direction == "^":
-        next_pos = (position[0] - 1, position[1])
-        if next_pos in carte:
-            if carte[next_pos]["type"] == "#":
-                # Try moving right immediately instead of staying in place
-                next_pos = (position[0], position[1] + 1)
-                if next_pos in carte and carte[next_pos]["type"] != "#":
-                    return next_pos, ">"
-                # If that direction isn't viable either, return None
-                return None, None
-            return next_pos, "^"
-        return None, None
-    elif direction == "v":
-        next_pos = (position[0] + 1, position[1])
-        if next_pos in carte:
-            if carte[next_pos]["type"] == "#":
-                next_pos = (position[0], position[1] - 1)
-                if next_pos in carte and carte[next_pos]["type"] != "#":
-                    return next_pos, "<"
-                return None, None
-            return next_pos, "v"
-        return None, None
-    elif direction == ">":
-        next_pos = (position[0], position[1] + 1)
-        if next_pos in carte:
-            if carte[next_pos]["type"] == "#":
-                next_pos = (position[0] + 1, position[1])
-                if next_pos in carte and carte[next_pos]["type"] != "#":
-                    return next_pos, "v"
-                return None, None
-            return next_pos, ">"
-        return None, None
-    elif direction == "<":
-        next_pos = (position[0], position[1] - 1)
-        if next_pos in carte:
-            if carte[next_pos]["type"] == "#":
-                next_pos = (position[0] - 1, position[1])
-                if next_pos in carte and carte[next_pos]["type"] != "#":
-                    return next_pos, "^"
-                return None, None
-            return next_pos, "<"
-        return None, None
+def move_guard(position, direction, carte):
+    directions = [">", "v", "<", "^"]
+    direction_index = directions.index(direction)
+    
+    for _ in range(4):
+        # print(direction)
+        if direction == ">":
+            next_pos = (position[0], position[1] + 1)
+        elif direction == "v":
+            next_pos = (position[0] + 1, position[1])
+        elif direction == "<":
+            next_pos = (position[0], position[1] - 1)
+        elif direction == "^":
+            next_pos = (position[0] - 1, position[1])
+        
+        if next_pos in carte and carte[next_pos]["type"] != "#":
+            return next_pos, direction
+
+        if next_pos in carte and carte[next_pos]["type"] == "#":
+            # Turn right to the next direction
+            direction_index = (direction_index + 1) % 4
+            direction = directions[direction_index]
+            # print("New direction", direction)
+        else:
+            # Not in the map and we exit
+            return None, None
+    return None, None
 
 
 def move_guard_until_end(carte: Dict[str, str], position: Tuple[int, int], direction: str, part2: bool = False) -> Tuple[int, Dict[str, str]]:
-    path = set(position)
+    path = [position]
     carte[position]["visited"] = True
     carte[position]["type"] = "X"
-    carte[position]["direction"] = direction
+    carte[position]["direction"].extend(direction)
     counter = 1
     while position is not None:
         assert carte[position]["type"] != "#"
-        position, direction = move_guard(carte, position, direction)
+        position, direction = move_guard(position, direction, carte, )
         if part2:
             if position in path:
                 # We have been here before
                 # Check if the direction is the same
-                if carte[position]["direction"] == direction:
+                if direction in carte[position]["direction"]:
                     # We have a loop
                     # print("Loop at", position)
                     return True
         if position is not None: # THat means we are still in the map
             if not carte[position]["visited"]: # If we have not visited this position
                 counter += 1 # Increase the counter
-        path.add(position)
+        path.append(position)
         # print(counter)
         if position is not None:
             carte[position]["visited"] = True
             carte[position]["type"] = "X"
-            carte[position]["direction"] = direction
+            carte[position]["direction"].extend(direction)
     if part2:
         return False
-    return len(path), carte
+    return path, carte
 
 
 
-def print_carte(carte: Dict[str, str]):
+def print_carte(carte: dict[str, str]):
     # from the dict constract the array again
     max_x = max([x[0] for x in carte.keys()])
     max_y = max([x[1] for x in carte.keys()])
@@ -148,17 +132,25 @@ def part2(input_data: Optional[List[str]]) -> Union[str, int]:
         
         # Find all visited positions that could be blocked
         visited_positions = [pos for pos in marked_carte if marked_carte[pos]["visited"]]
+        print(len(visited_positions), "<---- unique positions")
+        print(len(path), "<---- path length")
+        # import ipdb; ipdb.set_trace()   
+        # Try to block at every position on the map
+        # visited_positions = [(x, y) for x in range(1, len(input_data[0]) - 1) for y in range(1, len(input_data) - 1) if (x, y) != start_position][1:]
+
         
-        loops = 0
+        loops = set()
+        
         for _, pos in enumerate(visited_positions):
+            print(_, "/", len(visited_positions), end="\r")
             # Create a fresh map for each test
             test_carte = create_map(input_data)[0]
             # Add the test blocker
-            test_carte[pos]["type"] = "#"
+            test_carte[pos] = {"type": "#", "visited": False, "direction": []}
             
             # Try to find a loop with this configuration
             has_loop = move_guard_until_end(test_carte, start_position, start_direction, True)
             if has_loop:
-                loops += 1
+                loops.add(pos)
                 
-        return loops
+        return len(list(loops))
