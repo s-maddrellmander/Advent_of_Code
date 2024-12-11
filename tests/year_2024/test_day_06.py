@@ -18,9 +18,9 @@ def data():
 
 def test_create_map(data):
     carte, start = create_map(data)
-    assert carte[(0, 0)] == {"type": ".", "visited": False, "direction": None}
-    assert carte[(6, 4)] == {"type": "^", "visited": False,  "direction": None}
-    assert carte[(0, 4)] == {"type": "#", "visited": False, "direction": None}
+    assert carte[(0, 0)] == {"type": ".", "visited": False, "direction": []}
+    assert carte[(6, 4)] == {"type": "^", "visited": False,  "direction": []}
+    assert carte[(0, 4)] == {"type": "#", "visited": False, "direction": []}
     assert start == (6, 4)
    
  
@@ -28,7 +28,7 @@ def test_create_map(data):
 def test_move_guard(direction, data):
     carte, _ = create_map(data)
     position = (1, 1)
-    new_position, new_direction = move_guard(carte, position, direction)
+    new_position, new_direction = move_guard(position, direction, carte)
     if direction == "^":
         assert new_position == (0, 1)
         assert new_direction == "^"
