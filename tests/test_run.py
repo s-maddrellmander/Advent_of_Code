@@ -64,10 +64,7 @@ def test_main_with_wrong_part(caplog, monkeypatch):
     main()
 
     # Use caplog to assert log messages
-    assert (
-        "day_00 part 3 not found."
-        in caplog.text
-    )
+    assert "day_00 part 3 not found." in caplog.text
 
 
 def test_main_with_wrong_num_args(caplog, monkeypatch):

@@ -1,5 +1,7 @@
 import pytest
+
 from solutions.year_2024.day_14 import *
+
 
 def test_single_point_modulo():
     "p=2,4 v=2,-3"
@@ -7,7 +9,7 @@ def test_single_point_modulo():
     y = 4
     t = 1
 
-    x_t =x + 2 * t
+    x_t = x + 2 * t
     x_t = x_t % 11
     assert x_t == 4
 
@@ -16,7 +18,7 @@ def test_single_point_modulo():
     assert y_t == 1
 
     t = 3
-    x_t =x + 2 * t
+    x_t = x + 2 * t
     x_t = x_t % 11
     assert x_t == 8
 
@@ -25,7 +27,7 @@ def test_single_point_modulo():
     assert y_t == 2
 
     t = 5
-    x_t =x + 2 * t
+    x_t = x + 2 * t
     x_t = x_t % 11
     assert x_t == 1
     y_t = y - 3 * t
@@ -35,7 +37,8 @@ def test_single_point_modulo():
 
 @pytest.fixture
 def test_data():
-    return ["p=0,4 v=3,-3",
+    return [
+        "p=0,4 v=3,-3",
         "p=6,3 v=-1,-3",
         "p=10,3 v=-1,2",
         "p=2,0 v=2,-1",
@@ -46,11 +49,14 @@ def test_data():
         "p=9,3 v=2,3",
         "p=7,3 v=-1,2",
         "p=2,4 v=2,-3",
-        "p=9,5 v=-3,-3",]
+        "p=9,5 v=-3,-3",
+    ]
 
-def test_parse_data(test_data): 
+
+def test_parse_data(test_data):
     guards = parse_data(test_data)
     assert guards[0] == (complex(0, 4), complex(3, -3))
+
 
 def test_move_guard():
     guard = (complex(2, 4), complex(2, -3))
@@ -58,6 +64,7 @@ def test_move_guard():
     assert move_guard(guard, 1, bounds) == (4, 1)
     assert move_guard(guard, 3, bounds) == (8, 2)
     assert move_guard(guard, 5, bounds) == (1, 3)
+
 
 def test_all_guards_100s(test_data):
     guards = parse_data(test_data)
@@ -81,9 +88,9 @@ def test_all_guards_100s(test_data):
     assert grid[5][3] == 1
     assert grid[5][4] == 2
 
+
 def test_put_in_quadrant():
     bounds = (11, 7)
-
 
     probe = (0, 2)
     assert put_in_quadrant(probe, bounds) == 0
@@ -92,6 +99,7 @@ def test_put_in_quadrant():
 
     probe = (2, 3)
     assert put_in_quadrant(probe, bounds) == -1
+
 
 def test_part1(test_data):
     assert part1(test_data, bounds=(11, 7)) == 12

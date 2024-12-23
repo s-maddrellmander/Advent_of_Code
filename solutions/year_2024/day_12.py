@@ -13,18 +13,24 @@ def parse_map(input_data: list[str]) -> dict[complex, str]:
     return mapping
 
 
-def find_island(mapping: dict[complex, str], start: complex, visited: list[list[bool]]) -> tuple[set[complex], list[list[bool]]]:
+def find_island(
+    mapping: dict[complex, str], start: complex, visited: list[list[bool]]
+) -> tuple[set[complex], list[list[bool]]]:
     # Find the island of the given start point
     island = set()
     stack = [start]
     letter = mapping[start]
     while stack:
         current = stack.pop()
-        if visited[int(current.real)][int(current.imag)]: # If visited we don't need to look at it again
+        if visited[int(current.real)][
+            int(current.imag)
+        ]:  # If visited we don't need to look at it again
             continue
-        
+
         if mapping[current] == letter:
-            visited[int(current.real)][int(current.imag)] = True # set this point to visited 
+            visited[int(current.real)][
+                int(current.imag)
+            ] = True  # set this point to visited
             island.add(current)
             for direction in [1, -1, 1j, -1j]:
                 if current + direction in mapping:
@@ -42,6 +48,7 @@ def island_perimeter(island: set[complex]) -> int:
                 perimeter += 1
     return perimeter
 
+
 def island_sides(island: set[complex]) -> int:
     # Calculate the number of straight sides in the island - not the perimeter
     # Get the actual perimeter coordinates first
@@ -50,14 +57,12 @@ def island_sides(island: set[complex]) -> int:
         exposed_faces = 0
         on_perimeter = False
         for direction in [1, -1, 1j, -1j]:
-            
             if point + direction not in island:
-                
                 exposed_faces += 1
                 if on_perimeter == False:
                     perimeter.append(point)
                     on_perimeter = True
-    
+
     # For each point in the perimeter, calculate its vertices
     vertices = set()
     for point in perimeter:
@@ -66,7 +71,7 @@ def island_sides(island: set[complex]) -> int:
         vertices.add(complex(x + 1.0, y - 0.0))
         vertices.add(complex(x - 0.0, y + 1.0))
         vertices.add(complex(x + 1.0, y + 1.0))
-    
+
     # Now vertices contains all the vertices for each point in the perimeter
     print(vertices)
 
@@ -82,16 +87,14 @@ def island_sides(island: set[complex]) -> int:
             # Corner fully enclosed, except for one diagonal direction
             corner += 1
         elif exposed_faces == 6:
-            # 90 degree corner 
+            # 90 degree corner
             corner += 1
     return corner, vertices
 
-  
 
-
-
-
-def find_all_islands(mapping: dict[complex, str], map_dims: tuple[int]) -> list[set[complex]]:
+def find_all_islands(
+    mapping: dict[complex, str], map_dims: tuple[int]
+) -> list[set[complex]]:
     # Find all the islands in the mapping
     visited = [[False for _ in range(map_dims[0])] for _ in range(map_dims[1])]
     islands = []
@@ -122,7 +125,7 @@ def part1(input_data: list[str] | None) -> str | int:
         total_fence = 0
         for island in islands:
             perimeter = island_perimeter(island)
-            total_fence += perimeter * len(island) 
+            total_fence += perimeter * len(island)
         return total_fence
 
 

@@ -22,10 +22,11 @@ def do_maths(current: int, operator: str, new_value: int) -> int:
     elif operator == "||":
         return int(str(current) + str(new_value))
 
+
 def branching_operation(values, target, ops=["+", "*"]):
     """
     Have a queue containing the running sum for each path of the sum
-    Then at each level copy + add each new combination. 
+    Then at each level copy + add each new combination.
     """
     queue = [(values[0], str(values[0]))]
     found = False
@@ -34,13 +35,12 @@ def branching_operation(values, target, ops=["+", "*"]):
         for q_idx in range(len(queue)):
             running_sum, path = queue.pop(0)
             for op in ops:
-                count+= 1
+                count += 1
                 new_sum = do_maths(running_sum, op, values[idx])
-                queue.append((new_sum, path+op+str(values[idx])))
+                queue.append((new_sum, path + op + str(values[idx])))
                 if new_sum == target and idx == len(values) - 1:
                     return True
     return False
-
 
 
 def part1(input_data: Optional[List[str]]) -> Union[str, int]:
@@ -66,6 +66,7 @@ def part1(input_data: Optional[List[str]]) -> Union[str, int]:
                 solutions += 1
                 running_total += target
         return running_total
+
 
 def part2(input_data: Optional[List[str]]) -> Union[str, int]:
     """

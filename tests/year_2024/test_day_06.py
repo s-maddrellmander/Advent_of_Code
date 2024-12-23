@@ -1,29 +1,32 @@
-from solutions.year_2024.day_06 import *
 import pytest
+
+from solutions.year_2024.day_06 import *
+
 
 @pytest.fixture
 def data():
     return [
-            "....#.....",
-            ".........#",
-            "..........",
-            "..#.......",
-            ".......#..",
-            "..........",
-            ".#..^.....",
-            "........#.",
-            "#.........",
-            "......#...",
-                ]
+        "....#.....",
+        ".........#",
+        "..........",
+        "..#.......",
+        ".......#..",
+        "..........",
+        ".#..^.....",
+        "........#.",
+        "#.........",
+        "......#...",
+    ]
+
 
 def test_create_map(data):
     carte, start = create_map(data)
     assert carte[(0, 0)] == {"type": ".", "visited": False, "direction": []}
-    assert carte[(6, 4)] == {"type": "^", "visited": False,  "direction": []}
+    assert carte[(6, 4)] == {"type": "^", "visited": False, "direction": []}
     assert carte[(0, 4)] == {"type": "#", "visited": False, "direction": []}
     assert start == (6, 4)
-   
- 
+
+
 @pytest.mark.parametrize("direction", ["^", "v", ">", "<"])
 def test_move_guard(direction, data):
     carte, _ = create_map(data)
@@ -44,11 +47,11 @@ def test_move_guard(direction, data):
     else:
         assert new_position is None
         assert new_direction is None
-        
-        
-        
+
+
 def test_part1(data):
     assert part1(data) == 41
-    
+
+
 def test_part2(data):
     assert part2(data) == 6

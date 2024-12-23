@@ -10,6 +10,7 @@ from utils import Timer
 (4) Find the lowest cost path from start to the end. 
 """
 
+
 def map_to_graph(input_data: list[str]) -> dict[complex, list[complex]]:
     graph = {}
     start = None
@@ -35,34 +36,39 @@ def map_to_graph(input_data: list[str]) -> dict[complex, list[complex]]:
 def move_cost(current: complex, next: complex, direction: complex, part2=False) -> int:
     if next == current + direction:
         return 1
-    return 1001 # 1000 to change direction, 1 to move
+    return 1001  # 1000 to change direction, 1 to move
+
 
 def dikstra(graph: dict[complex, list[complex]], start: complex, end: complex) -> int:
-    cost = {(node, _dir): float('inf') for _dir in [-1, 1, 1j, -1j] for node in graph}
+    cost = {(node, _dir): float("inf") for _dir in [-1, 1, 1j, -1j] for node in graph}
     direction = 1 + 0j  # East
     cost[start, direction] = 0
-    parents = {} # Used to reconstruct the path 
+    parents = {}  # Used to reconstruct the path
     visited = set()
-    
+
     while True:
         print(f"{100*len(visited) / len(cost):.1f} %", end="\r")
-        current, current_dir = min((node for node in cost if node not in visited), key=cost.get)
+        current, current_dir = min(
+            (node for node in cost if node not in visited), key=cost.get
+        )
         visited.add((current, current_dir))
-        
+
         if current == end:
             return cost[current, current_dir]
-        
+
         for neighbour in graph[current]:
             delta_dir = neighbour - current
-            new_cost = cost[current, current_dir] + move_cost(current, neighbour, current_dir)
-            
+            new_cost = cost[current, current_dir] + move_cost(
+                current, neighbour, current_dir
+            )
+
             if new_cost < cost[neighbour, delta_dir]:
                 cost[neighbour, delta_dir] = new_cost
                 parents[neighbour, delta_dir] = [(current, current_dir)]
             elif new_cost == cost[neighbour, delta_dir]:
                 # If the cost is the same, we can reach the node from multiple paths - so add the extra node
                 parents[neighbour, delta_dir].append((current, current_dir))
-    
+
     # Backtrack the parent pathto find all paths of the shortest length from start to end
     def backtrack(node):
         if node == start:
@@ -72,55 +78,64 @@ def dikstra(graph: dict[complex, list[complex]], start: complex, end: complex) -
             for path in backtrack(p):
                 paths.append(path + [node])
         return paths
-    import ipdb; ipdb.set_trace()
+
+    import ipdb
+
+    ipdb.set_trace()
     paths = backtrack(end)
 
 
-def dikstra_paths(graph: dict[complex, list[complex]], start: complex, end: complex) -> int:
-    cost = {(node, _dir): float('inf') for _dir in [-1, 1, 1j, -1j] for node in graph}
+def dikstra_paths(
+    graph: dict[complex, list[complex]], start: complex, end: complex
+) -> int:
+    cost = {(node, _dir): float("inf") for _dir in [-1, 1, 1j, -1j] for node in graph}
     direction = 1 + 0j  # East
     cost[start, direction] = 0
-    parents = {} # Used to reconstruct the path 
+    parents = {}  # Used to reconstruct the path
     visited = set()
-    
+
     while len(visited) < len(cost):
         print(f"{100*len(visited) / len(cost):.1f} %", end="\r")
-        current, current_dir = min((node for node in cost if node not in visited), key=cost.get)
+        current, current_dir = min(
+            (node for node in cost if node not in visited), key=cost.get
+        )
         visited.add((current, current_dir))
-        
+
         # if current == end:
         #     import ipdb; ipdb.set_trace()
         #     return cost[current, current_dir]
-        
+
         for neighbour in graph[current]:
             delta_dir = neighbour - current
-            new_cost = cost[current, current_dir] + move_cost(current, neighbour, current_dir)
-            
+            new_cost = cost[current, current_dir] + move_cost(
+                current, neighbour, current_dir
+            )
+
             if new_cost < cost[neighbour, delta_dir]:
                 cost[neighbour, delta_dir] = new_cost
                 parents[neighbour, delta_dir] = [(current, current_dir)]
             elif new_cost == cost[neighbour, delta_dir]:
                 # If the cost is the same, we can reach the node from multiple paths - so add the extra node
                 parents[neighbour, delta_dir].append((current, current_dir))
-    
+
     # Backtrack the parent pathto find all paths of the shortest length from start to end
     def backtrack(state) -> list[list[tuple[complex, complex]]]:
         node, direction = state
         if node == start:
             return [[(start, direction)]]
-            
+
         paths = []
         if state in parents:
             for parent_state in parents[state]:
                 for path in backtrack(parent_state):
                     paths.append(path + [state])
         return paths
-    
+
     # Find the optimal end state(s)
     end_states = [(end, dir) for dir in [-1, 1, 1j, -1j]]
     min_cost = min(cost[state] for state in end_states)
     optimal_end_states = [state for state in end_states if cost[state] == min_cost]
-    
+
     # Get all paths from each optimal end state
     all_paths = []
     for end_state in optimal_end_states:
@@ -170,5 +185,3 @@ def part2(input_data: list[str] | None) -> str | int:
         path_length = dikstra_paths(graph, start, end)
         # Now we find all the paths of the best length, and the full set of nodes that are part of any valid path them
         return path_length
-        
-        

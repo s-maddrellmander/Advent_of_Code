@@ -5,8 +5,9 @@ from utils import Timer
 
 
 def parse_input(input_string: str) -> list[str]:
-    line = input_string[0].split(' ')
+    line = input_string[0].split(" ")
     return line
+
 
 def blink(stones: list[str]) -> list[str]:
     new_stones = []
@@ -21,16 +22,17 @@ def blink(stones: list[str]) -> list[str]:
             new_stones.append(str(int(stone) * 2024))
     return new_stones
 
+
 def fast_blink(stones: dict[str, int]) -> dict[str, int]:
     # Don't need to track the full list, obvs, just the number of each stone
-    # The order didn't actually matter, that was a red herring. 
+    # The order didn't actually matter, that was a red herring.
     def add_key(d, k, v=1):
         if k not in d:
             d[k] = 0
         d[k] += v
 
     new_stones = {}
-    for stone in stones: # Here we get the keys
+    for stone in stones:  # Here we get the keys
         current = stones[stone]
         # Apply the rules
         if stone == "0":
@@ -62,8 +64,8 @@ def part1(input_data: list[str] | None) -> str | int:
         stones = {stone: 1 for stone in _stones}
         for _ in range(25):
             stones = fast_blink(stones)
-        
-        val = sum(stones.values()) 
+
+        val = sum(stones.values())
         return val
 
 
@@ -85,6 +87,6 @@ def part2(input_data: list[str] | None) -> str | int:
         stones = {stone: 1 for stone in _stones}
         for _ in range(75):
             stones = fast_blink(stones)
-        
-        val = sum(stones.values()) 
+
+        val = sum(stones.values())
         return val
